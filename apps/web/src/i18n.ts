@@ -2925,6 +2925,33 @@ const chinese: Readonly<Record<string, string>> = {
   "starting": "启动中",
   "degraded": "降级",
   "Sampling every": "采样间隔",
+  "Add keybinding": "添加快捷键",
+  "Always": "始终",
+  "Cancel new keybinding": "取消新建快捷键",
+  "Condition": "条件",
+  "Fix the expression above to continue editing visually.": "请先修正上方的表达式，再继续可视化编辑。",
+  "Group": "分组",
+  "Negate group": "取反分组",
+  "New keybinding": "新建快捷键",
+  "No keybindings match your search.": "没有匹配搜索的快捷键。",
+  "Not": "非",
+  "Open keybindings.json": "打开 keybindings.json",
+  "Search keybindings": "搜索快捷键",
+  "T3 Code does not recognize this condition yet. It can still be saved, but it may not match unless the runtime provides it.":
+    "T3 Code 尚无法识别此条件。仍可保存，但除非运行时提供该条件，否则可能不会匹配。",
+  "The browser may claim some shortcuts first. The desktop app receives them all.":
+    "浏览器可能会先占用部分快捷键；桌面应用可以接收全部快捷键。",
+  "The keybinding was not removed.": "快捷键未移除。",
+  "The keybinding was not saved.": "快捷键未保存。",
+  "The keybindings file was not opened.": "未能打开快捷键文件。",
+  "Unable to open keybindings file": "无法打开快捷键文件",
+  "Unable to remove keybinding": "无法移除快捷键",
+  "Unable to save keybinding": "无法保存快捷键",
+  "When": "当",
+  "When expression": "条件表达式",
+  "Navigation": "导航",
+  "Other": "其他",
+  "Preview & diff": "预览与差异",
 };
 
 export function translate(language: InterfaceLanguage, text: string): string {
