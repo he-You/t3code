@@ -31,6 +31,7 @@ import { Button, InlineButton } from "../ui/button";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import type { ComposerBannerStackItem } from "./ComposerBannerStack";
 import type { ThreadNowItem } from "./ThreadNow";
+import { readInterfaceLanguage, translate } from "../../i18n";
 
 export function extensionStatusBannerItem(
   statuses: NonNullable<OrchestrationV2ProviderSession["extensionStatuses"]>,
@@ -110,7 +111,7 @@ export function goalNowItem(input: {
             <InlineButton
               onClick={() => void onSendCommand("/goal resume", "Failed to resume goal.")}
             >
-              Resume
+              {translate(readInterfaceLanguage(), "Resume")}
             </InlineButton>
             <span aria-hidden>·</span>
           </>
@@ -119,7 +120,7 @@ export function goalNowItem(input: {
           tone="muted"
           onClick={() => void onSendCommand("/goal clear", "Failed to clear goal.")}
         >
-          Clear
+          {translate(readInterfaceLanguage(), "Clear")}
         </InlineButton>
       </>
     ),
@@ -275,7 +276,9 @@ export function branchMismatchBannerItem(input: {
     icon: <GitBranchIcon />,
     title: (
       <span className="flex min-w-0 items-baseline gap-1.5">
-        <span className="shrink-0 font-normal text-muted-foreground">Branch changed from</span>
+        <span className="shrink-0 font-normal text-muted-foreground">
+              {translate(readInterfaceLanguage(), "Branch changed from")}
+            </span>
         <Tooltip>
           <TooltipTrigger
             render={

@@ -7,6 +7,7 @@ import {
 } from "~/lib/assistantTextSelection";
 import { toastManager } from "../ui/toast";
 import { observeResize } from "~/lib/observeResize";
+import { useTranslation } from "../../i18n";
 
 const CITATION_PULSE_DURATION_MS = 650;
 const CITATION_HIGHLIGHT_HOLD_MS = 1575;
@@ -194,8 +195,8 @@ function observeAssistantCitationSource({
             request.onComplete();
             toastManager.add({
               type: "warning",
-              title: "Could not open the cited response",
-              description: "Click the citation to try again.",
+              title: t("Could not open the cited response"),
+              description: t("Click the citation to try again."),
             });
           },
         );
@@ -207,8 +208,8 @@ function observeAssistantCitationSource({
       if (!range) {
         toastManager.add({
           type: "warning",
-          title: "The quoted text has changed",
-          description: "Showing the source response. The saved quote is unchanged.",
+          title: t("The quoted text has changed"),
+          description: t("Showing the source response. The saved quote is unchanged."),
         });
       }
     }
@@ -347,6 +348,7 @@ export function AssistantCitationSource({
   listRef: RefObject<LegendListRef | null>;
   children: ReactNode;
 }) {
+  const t = useTranslation();
   const rootRef = useRef<HTMLDivElement>(null);
   // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- observes this message's DOM for a citation reveal request and scrolls the LegendList to it
   useEffect(() => {

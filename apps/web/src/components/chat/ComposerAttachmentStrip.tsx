@@ -46,6 +46,7 @@ import {
   SnapShotAttachmentDetails,
 } from "./SnapShotAttachmentDetails";
 import { prepareVideoFirstFrame } from "../../lib/videoFirstFrame";
+import { useTranslation } from "../../i18n";
 
 function ComposerVideoThumbnail({ file }: { file: File }) {
   const setVideo = (video: HTMLVideoElement | null) => {
@@ -147,6 +148,7 @@ export function ComposerAttachmentMediaRow({
   readonly onRemoveImage: (imageId: string) => void;
   readonly onRemoveFile: (fileId: string) => void;
 }) {
+  const t = useTranslation();
   const uploadsByImageId = useAttachmentUploadStore((state) => state.uploadsByImageId);
   const pendingSnapShotIdSet = new Set(pendingSnapShotIds);
   const nonPersistedImageIdSet = new Set(nonPersistedImageIds);
@@ -245,7 +247,7 @@ export function ComposerAttachmentMediaRow({
                     render={
                       <span
                         role="img"
-                        aria-label="Draft attachment may not persist"
+                        aria-label={t("Draft attachment may not persist")}
                         className="absolute left-1 top-1 inline-flex items-center justify-center rounded bg-background/85 p-0.5 text-warning-foreground"
                       >
                         <CircleAlertIcon className="size-3" />
@@ -675,6 +677,7 @@ export function ComposerAttachButton({
   readonly addComposerAttachments: (files: File[]) => Promise<boolean>;
   readonly focusComposer: () => void;
 }) {
+  const t = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
   return (
     <>
@@ -703,7 +706,7 @@ export function ComposerAttachButton({
               size="icon-sm"
               onPointerDown={(event) => event.preventDefault()}
               onClick={() => inputRef.current?.click()}
-              aria-label="Attach files"
+              aria-label={t("Attach files")}
             />
           }
         >

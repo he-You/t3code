@@ -3386,6 +3386,24 @@ const chinese: Readonly<Record<string, string>> = {
   "Could not change auto-resume": "无法更改自动恢复设置",
   "Transcribe speech on {environment} and use voice input across environments.":
     "在 {environment} 上转录音频，并在各环境中使用语音输入。",
+  "Close stash": "关闭暂存",
+  "Delete stashed prompt": "删除暂存的提示词",
+  "Stash": "暂存",
+  "Stashed prompts": "暂存的提示词",
+  "Attach files": "附加文件",
+  "Draft attachment could not be saved locally and may be lost on navigation.":
+    "草稿附件无法保存到本地，导航后可能丢失。",
+  "Draft attachment may not persist": "草稿附件可能无法保留",
+  "Click the citation to try again.": "点击引用重试。",
+  "Could not open the cited response": "无法打开引用的回复",
+  "Showing the source response. The saved quote is unchanged.": "正在显示源回复。已保存的引用不变。",
+  "The quoted text has changed": "引用的文本已更改",
+  "Copy full path": "复制完整路径",
+  "Copy relative path": "复制相对路径",
+  "Full path": "完整路径",
+  "Relative path": "相对路径",
+  "Load earlier turns, then click the citation to try again. Your saved quote is unchanged.":
+    "加载更早的回合，然后点击引用重试。你保存的引用不会改变。",
 };
 
 export function translate(language: InterfaceLanguage, text: string): string {
