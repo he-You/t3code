@@ -18,6 +18,7 @@ import { Button } from "../ui/button";
 import { Dialog } from "../ui/dialog";
 import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "../ui/select";
 import { WizardFooter, WizardHeader, WizardPanel, WizardPopup, WizardSteps } from "../ui/wizard";
+import { useTranslation } from "../../i18n";
 
 export function VoiceInputSetup(props: {
   environmentId: EnvironmentId | null;
@@ -35,6 +36,7 @@ export function VoiceInputSetup(props: {
   onCancelDownload(): void;
   onStartRecording(): void;
 }) {
+  const t = useTranslation();
   const navigate = useNavigate();
   const environment = useEnvironment(props.environmentId);
   const canManage = useEnvironmentScope(props.environmentId, AuthSettingsWriteScope);
@@ -66,7 +68,7 @@ export function VoiceInputSetup(props: {
   );
   const selectedMicrophoneLabel = selectedMicrophone
     ? (microphones.find((device) => device.deviceId === selectedMicrophone)?.label ??
-      "Selected microphone (Unavailable)")
+      t("Selected microphone (Unavailable)"))
     : "System default";
   const status = props.status?.supported ? props.status : null;
   const model = props.model;
@@ -81,8 +83,13 @@ export function VoiceInputSetup(props: {
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
       <WizardPopup>
         <WizardHeader
-          title="Set up voice input"
-          description={`Transcribe speech on ${environment?.label ?? "your transcription environment"} and use voice input across environments.`}
+          title={t("Set up voice input")}
+          description={t(
+            "Transcribe speech on {environment} and use voice input across environments.",
+          ).replace(
+            "{environment}",
+            environment?.label ?? t("your transcription environment"),
+          )}
         >
           <WizardSteps steps={["Model", "Ready to dictate"]} currentStep={props.step} />
         </WizardHeader>
@@ -101,7 +108,7 @@ export function VoiceInputSetup(props: {
                   </div>
                   <p className="mt-2 text-muted-foreground">
                     Download the {Math.round(model.size / 1024 / 1024)} MB model to{" "}
-                    {environment?.label ?? "your transcription environment"}. Microphone audio is
+                    {environment?.label ?? t("your transcription environment")}. Microphone audio is
                     sent there for transcription, as chosen in Voice settings.
                   </p>
                   <p className="mt-2 text-muted-foreground">
@@ -112,7 +119,7 @@ export function VoiceInputSetup(props: {
                     <div role="status" className="mt-4 space-y-1 text-muted-foreground">
                       <div
                         role="progressbar"
-                        aria-label="Speech model download progress"
+                        aria-label={t("Speech model download progress")}
                         aria-valuemin={0}
                         aria-valuemax={100}
                         aria-valuenow={progress ?? undefined}

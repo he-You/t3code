@@ -1,4 +1,5 @@
 import type { ChatComposerProps } from "./ChatComposer";
+import { useTranslation } from "../../i18n";
 import {
   type ChatFileAttachment,
   PROVIDER_SEND_TURN_MAX_ATTACHMENTS,
@@ -83,6 +84,7 @@ export function useComposerAttachmentIntake(input: {
     selection?: { start: number; end: number },
   ) => boolean;
 }) {
+  const t = useTranslation();
   const {
     activeThreadId,
     activePendingProgress,
@@ -129,7 +131,7 @@ export function useComposerAttachmentIntake(input: {
     ) {
       toastManager.add({
         type: "error",
-        title: "This question cannot accept attachments.",
+        title: t("This question cannot accept attachments."),
       });
       return false;
     }
@@ -187,7 +189,7 @@ export function useComposerAttachmentIntake(input: {
         acceptedImages.push(normalizeComposerImageFileMimeType(file));
       } else {
         if (fileStagingLimit === null) {
-          error = "This server does not support file attachments.";
+          error = t("This server does not support file attachments.");
           continue;
         }
         if (file.size <= 0) {
@@ -397,8 +399,8 @@ export function useComposerAttachmentIntake(input: {
       }
       toastManager.add({
         type: "error",
-        title: "Pasted text is too large for this message",
-        description: "Remove some text or an attachment, then paste again.",
+        title: t("Pasted text is too large for this message"),
+        description: t("Remove some text or an attachment, then paste again."),
         data: { hideCopyButton: true },
       });
       return true;
@@ -419,8 +421,8 @@ export function useComposerAttachmentIntake(input: {
       if (!wouldExceedInputLimit) return false;
       toastManager.add({
         type: "error",
-        title: "Pasted text is too large to attach",
-        description: "Reduce the clipboard contents or save a smaller excerpt as a file.",
+        title: t("Pasted text is too large to attach"),
+        description: t("Reduce the clipboard contents or save a smaller excerpt as a file."),
         data: { hideCopyButton: true },
       });
       return true;

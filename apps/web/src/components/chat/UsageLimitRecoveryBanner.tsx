@@ -20,6 +20,7 @@ import { formatUpcomingTimestamp } from "../../timestampFormat";
 import { toastManager } from "../ui/toast";
 import type { ComposerBannerStackItem } from "./ComposerBannerStack";
 import { copyAdminRequest } from "./ThreadErrorBanner";
+import { useTranslation, readInterfaceLanguage, translate } from "../../i18n";
 
 type RecoveryProps = {
   runId: RunId;
@@ -60,16 +61,20 @@ export function usageLimitRecoveryBannerItem(props: RecoveryProps): ComposerBann
     resumes && resetAt && snoozedUntil && Date.parse(snoozedUntil) > Date.parse(resetAt)
       ? snoozedUntil
       : resetAt;
+  const language = readInterfaceLanguage();
   const resetDescription = displayAt
-    ? `${resumes ? "Resumes" : "Resets"} ${formatUpcomingTimestamp(displayAt, timestampFormat)}`
-    : "Reset time unavailable; retry manually";
+    ? `${translate(language, resumes ? "Resumes" : "Resets")} ${formatUpcomingTimestamp(
+        displayAt,
+        timestampFormat,
+      )}`
+    : translate(language, "Reset time unavailable; retry manually");
   if (!chatGptLimit) {
     return {
       id: `usage-limit-recovery:${runId}`,
       variant: "warning",
       group: "environment",
       icon: <GaugeIcon />,
-      title: "Usage limit reached",
+      title: translate(language, "Usage limit reached"),
       description: resetDescription,
       actions: recoveryActions,
     };
@@ -82,7 +87,10 @@ export function usageLimitRecoveryBannerItem(props: RecoveryProps): ComposerBann
     icon: <OpenAI aria-hidden="true" />,
     title: "ChatGPT usage limit reached",
     description: workspaceLimit
-      ? "You've reached your workspace's limit for using your ChatGPT plan in other apps."
+      ? translate(
+          language,
+          "You've reached your workspace's limit for using your ChatGPT plan in other apps.",
+        )
       : resetDescription,
     actions: (
       <>
@@ -100,6 +108,7 @@ export function usageLimitRecoveryBannerItem(props: RecoveryProps): ComposerBann
 }
 
 function RecoveryActions({ runId, resetAt, recovery, snoozedUntil, onChange }: RecoveryProps) {
+  const t = useTranslation();
   const [pending, setPending] = useState(false);
 
   const scheduled =
@@ -114,8 +123,8 @@ function RecoveryActions({ runId, resetAt, recovery, snoozedUntil, onChange }: R
     if (action === "snooze" && !snoozed && Date.parse(resetAt) <= Date.now()) {
       toastManager.add({
         type: "error",
-        title: "Could not snooze thread",
-        description: "The reset time has passed. Retry the thread manually.",
+        title: t("Could not snooze thread"),
+        description: t("The reset time has passed. Retry the thread manually."),
       });
       // The deadline timer can lag after a throttled tab or sleep; disable now.
       deadlineStore(Date.parse(resetAt)).refresh();
@@ -131,7 +140,8 @@ function RecoveryActions({ runId, resetAt, recovery, snoozedUntil, onChange }: R
     } catch (cause) {
       toastManager.add({
         type: "error",
-        title: action === "resume" ? "Could not change auto-resume" : "Could not snooze thread",
+        title:
+          action === "resume" ? t("Could not change auto-resume") : t("Could not snooze thread"),
         description: cause instanceof Error ? cause.message : "An error occurred.",
       });
     }
