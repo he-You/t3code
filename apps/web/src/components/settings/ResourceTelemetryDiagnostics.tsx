@@ -60,6 +60,7 @@ import {
   visibleResourceTelemetryProcesses,
 } from "./ResourceTelemetryDiagnostics.logic";
 import { SettingsSection } from "./settingsLayout";
+import { useTranslation } from "../../i18n";
 
 const HISTORY_WINDOWS = [
   { label: "5m", windowMs: 5 * 60_000, bucketMs: 15_000 },
@@ -101,28 +102,31 @@ function formatProcessName(process: Pick<ResourceTelemetryProcess, "command" | "
   return normalized.split(/[\\/]/).findLast((segment) => segment.length > 0) ?? normalized;
 }
 
-function categoryLabel(category: ResourceTelemetryProcessCategory): string {
+function categoryLabel(
+  category: ResourceTelemetryProcessCategory,
+  t: (text: string) => string,
+): string {
   switch (category) {
     case "server":
-      return "Server";
+      return t("Server");
     case "server-child":
-      return "Backend child";
+      return t("Backend child");
     case "provider-root":
-      return "Provider";
+      return t("Provider");
     case "terminal-root":
-      return "Terminal";
+      return t("Terminal");
     case "electron-main":
-      return "Electron main";
+      return t("Electron main");
     case "electron-renderer":
-      return "Renderer";
+      return t("Renderer");
     case "electron-gpu":
-      return "GPU";
+      return t("GPU");
     case "electron-utility":
-      return "Electron utility";
+      return t("Electron utility");
     case "resource-monitor":
-      return "Monitor";
+      return t("Monitor");
     case "unknown-t3":
-      return "T3 process";
+      return t("T3 process");
   }
 }
 
@@ -133,26 +137,30 @@ function categoryDotClass(category: ResourceTelemetryProcessCategory): string {
   return "bg-success";
 }
 
-function ioSemanticsLabel(semantics: ResourceTelemetryIoSemantics): string {
+function ioSemanticsLabel(
+  semantics: ResourceTelemetryIoSemantics,
+  t: (text: string) => string,
+): string {
   switch (semantics) {
     case "storage":
-      return "Storage bytes";
+      return t("Storage bytes");
     case "logical":
-      return "Logical bytes";
+      return t("Logical bytes");
     case "all-io":
-      return "All I/O bytes";
+      return t("All I/O bytes");
     case "unavailable":
-      return "Unavailable";
+      return t("Unavailable");
   }
 }
 
 function booleanStateLabel(
   value: BackgroundBooleanState,
   labels: { readonly true: string; readonly false: string },
+  t: (text: string) => string,
 ): string {
   if (value === "true") return labels.true;
   if (value === "false") return labels.false;
-  return "Unknown";
+  return t("Unknown");
 }
 
 function sourceStatusTone(status: ResourceTelemetrySourceStatus): "default" | "warning" | "danger" {
@@ -175,6 +183,7 @@ function SourceStatusBadge({
       }
     | undefined;
 }) {
+  const t = useTranslation();
   const tone = presentation?.tone ?? sourceStatusTone(status);
   return (
     <span
@@ -195,19 +204,20 @@ function SourceStatusBadge({
           tone === "danger" && "bg-destructive",
         )}
       />
-      {label} {presentation?.label ?? status}
+      {label} {presentation?.label ?? t(status)}
     </span>
   );
 }
 
 function LastSampleLabel({ sampledAt }: { sampledAt: DateTime.Utc | null }) {
+  const t = useTranslation();
   const relative = useRelativeTimeState(sampledAt ? DateTime.formatIso(sampledAt) : null);
   if (relative.status !== "relative") {
-    return <span className="text-2xs text-muted-foreground/55">Waiting for sample</span>;
+    return <span className="text-2xs text-muted-foreground/55">{t("Waiting for sample")}</span>;
   }
   return (
     <span className="text-2xs text-muted-foreground/60">
-      Updated <span className="font-mono tabular-nums">{relative.value}</span>
+      {t("Updated")} <span className="font-mono tabular-nums">{relative.value}</span>
       {relative.suffix ? ` ${relative.suffix}` : ""}
     </span>
   );
@@ -259,6 +269,7 @@ function AggregateCard({
   accentClass: string;
   aggregate: ResourceTelemetryAggregate;
 }) {
+  const t = useTranslation();
   return (
     <div className="relative overflow-hidden border-t border-border/60 px-4 py-4 first:border-t-0 md:border-t-0 md:border-l md:first:border-l-0 sm:px-5">
       <span className={cn("absolute inset-x-5 top-0 h-0.5 rounded-full opacity-75", accentClass)} />
@@ -267,14 +278,14 @@ function AggregateCard({
           {label}
         </div>
         <div className="rounded-md bg-muted/55 px-1.5 py-0.5 font-mono text-3xs tabular-nums text-muted-foreground/70">
-          {aggregate.processCount} {aggregate.processCount === 1 ? "process" : "processes"}
+          {aggregate.processCount} {t(aggregate.processCount === 1 ? "process" : "processes")}
         </div>
       </div>
       <div className="mt-3.5 grid grid-cols-2 gap-x-4 gap-y-2.5">
-        <MetricPair label="CPU" value={`${aggregate.currentCpuPercent.toFixed(1)}%`} />
-        <MetricPair label="Memory" value={formatBytes(aggregate.currentRssBytes)} />
-        <MetricPair label="Read" value={formatRate(aggregate.ioReadBytesPerSecond)} />
-        <MetricPair label="Write" value={formatRate(aggregate.ioWriteBytesPerSecond)} />
+        <MetricPair label={t("CPU")} value={`${aggregate.currentCpuPercent.toFixed(1)}%`} />
+        <MetricPair label={t("Memory")} value={formatBytes(aggregate.currentRssBytes)} />
+        <MetricPair label={t("Read")} value={formatRate(aggregate.ioReadBytesPerSecond)} />
+        <MetricPair label={t("Write")} value={formatRate(aggregate.ioWriteBytesPerSecond)} />
       </div>
     </div>
   );
@@ -294,6 +305,7 @@ function MetricPair({ label, value }: { label: string; value: string }) {
 }
 
 function HealthSource({ label, health }: { label: string; health: ResourceTelemetrySourceHealth }) {
+  const t = useTranslation();
   const expectedInBrowser =
     health.status === "unavailable" &&
     Option.exists(health.lastError, (error) => error.includes("'web' mode"));
@@ -303,9 +315,9 @@ function HealthSource({ label, health }: { label: string; health: ResourceTeleme
         <div className="text-sm font-medium text-foreground">{label}</div>
         <div className="mt-1 text-2xs leading-relaxed text-muted-foreground/65">
           {expectedInBrowser
-            ? "Available when this page runs inside the desktop app."
+            ? t("Available when this page runs inside the desktop app.")
             : Option.match(health.lastError, {
-                onNone: () => "No reported errors",
+                onNone: () => t("No reported errors"),
                 onSome: (error) => error,
               })}
         </div>
@@ -316,7 +328,7 @@ function HealthSource({ label, health }: { label: string; health: ResourceTeleme
         presentation={
           expectedInBrowser
             ? {
-                label: "Desktop only",
+                label: t("Desktop only"),
                 tone: "neutral",
               }
             : undefined
@@ -357,9 +369,10 @@ function HistoryWindowSelector({
   selectedWindowMs: number;
   onSelect: (windowMs: number) => void;
 }) {
+  const t = useTranslation();
   return (
     <ToggleGroup
-      aria-label="Resource history period"
+      aria-label={t("Resource history period")}
       variant="segmented"
       value={[String(selectedWindowMs)]}
       onValueChange={(next) => {
@@ -381,6 +394,7 @@ function ResourceHistoryChart({
 }: {
   buckets: ReadonlyArray<ResourceTelemetryHistoryBucket>;
 }) {
+  const t = useTranslation();
   const maxCpu = resourceHistoryCpuScaleMax(buckets);
   const maxIo = Math.max(1, ...buckets.map((bucket) => bucket.ioReadBytes + bucket.ioWriteBytes));
 
@@ -436,10 +450,10 @@ function ResourceHistoryChart({
               />
               <TooltipPopup side="top" className="text-left">
                 <div className="space-y-0.5">
-                  <div>CPU avg {bucket.avgCpuPercent.toFixed(1)}%</div>
-                  <div>CPU peak {bucket.maxCpuPercent.toFixed(1)}%</div>
-                  <div>Read {formatBytes(bucket.ioReadBytes)}</div>
-                  <div>Write {formatBytes(bucket.ioWriteBytes)}</div>
+                  <div>{t("CPU avg")} {bucket.avgCpuPercent.toFixed(1)}%</div>
+                  <div>{t("CPU peak")} {bucket.maxCpuPercent.toFixed(1)}%</div>
+                  <div>{t("Read")} {formatBytes(bucket.ioReadBytes)}</div>
+                  <div>{t("Write")} {formatBytes(bucket.ioWriteBytes)}</div>
                 </div>
               </TooltipPopup>
             </Tooltip>
@@ -533,6 +547,7 @@ function ProcessTable({
   signalingKeys: ReadonlySet<string>;
   onSignal: (process: ResourceTelemetryProcess, signal: ServerProcessSignal) => void;
 }) {
+  const t = useTranslation();
   const [collapsed, setCollapsed] = useState<ReadonlySet<string>>(() => new Set());
   const visible = visibleResourceTelemetryProcesses(processes, collapsed);
   const toggle = (process: ResourceTelemetryProcess) => {
@@ -572,24 +587,24 @@ function ProcessTable({
           </colgroup>
           <thead className="sticky top-0 z-10 border-b border-border/60 bg-card text-3xs uppercase tracking-widest text-muted-foreground/65">
             <tr>
-              <th className="px-4 py-2 font-semibold sm:pl-5">Process</th>
-              <th className="px-3 py-2 font-semibold">Category</th>
-              <th className="px-3 py-2 text-right font-semibold">CPU</th>
-              <th className="px-3 py-2 text-right font-semibold">CPU Time</th>
-              <th className="px-3 py-2 text-right font-semibold">Memory</th>
-              <th className="px-3 py-2 text-right font-semibold">Read/s</th>
-              <th className="px-3 py-2 text-right font-semibold">Write/s</th>
-              <th className="px-3 py-2 text-right font-semibold">Read Total</th>
-              <th className="px-3 py-2 text-right font-semibold">Write Total</th>
-              <th className="px-3 py-2 text-right font-semibold">PID</th>
-              <th className="px-2 py-2 text-right font-semibold sm:pr-4">Kill</th>
+              <th className="px-4 py-2 font-semibold sm:pl-5">{t("Process")}</th>
+              <th className="px-3 py-2 font-semibold">{t("Category")}</th>
+              <th className="px-3 py-2 text-right font-semibold">{t("CPU")}</th>
+              <th className="px-3 py-2 text-right font-semibold">{t("CPU Time")}</th>
+              <th className="px-3 py-2 text-right font-semibold">{t("Memory")}</th>
+              <th className="px-3 py-2 text-right font-semibold">{t("Read/s")}</th>
+              <th className="px-3 py-2 text-right font-semibold">{t("Write/s")}</th>
+              <th className="px-3 py-2 text-right font-semibold">{t("Read Total")}</th>
+              <th className="px-3 py-2 text-right font-semibold">{t("Write Total")}</th>
+              <th className="px-3 py-2 text-right font-semibold">{t("PID")}</th>
+              <th className="px-2 py-2 text-right font-semibold sm:pr-4">{t("Kill")}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border/50">
             {visible.length === 0 ? (
               <tr>
                 <td colSpan={11} className="px-4 py-5 text-xs text-muted-foreground sm:px-5">
-                  Waiting for the native process monitor.
+                  {t("Waiting for the native process monitor.")}
                 </td>
               </tr>
             ) : null}
@@ -603,7 +618,7 @@ function ProcessTable({
                   />
                 </td>
                 <td className="truncate px-3 py-2 text-2xs text-muted-foreground">
-                  {categoryLabel(process.category)}
+                  {categoryLabel(process.category, t)}
                 </td>
                 <td className="px-3 py-2 text-right font-mono tabular-nums">
                   {process.cpuPercent.toFixed(1)}%
@@ -626,7 +641,9 @@ function ProcessTable({
                 <td className="px-3 py-2 text-right font-mono tabular-nums text-muted-foreground">
                   <Tooltip>
                     <TooltipTrigger render={<span>{formatBytes(process.ioWriteBytes)}</span>} />
-                    <TooltipPopup side="top">{ioSemanticsLabel(process.ioSemantics)}</TooltipPopup>
+                    <TooltipPopup side="top">
+                      {ioSemanticsLabel(process.ioSemantics, t)}
+                    </TooltipPopup>
                   </Tooltip>
                 </td>
                 <td className="px-3 py-2 text-right font-mono tabular-nums text-muted-foreground">
@@ -654,6 +671,7 @@ function HistoryProcessTable({
 }: {
   processes: ReadonlyArray<ResourceTelemetryProcessSummary>;
 }) {
+  const t = useTranslation();
   return (
     <div className="border-t border-border/60">
       <ScrollArea
@@ -676,22 +694,22 @@ function HistoryProcessTable({
           </colgroup>
           <thead className="sticky top-0 z-10 border-b border-border/60 bg-card text-3xs uppercase tracking-widest text-muted-foreground/65">
             <tr>
-              <th className="px-4 py-2 font-semibold sm:pl-5">Process</th>
-              <th className="px-3 py-2 font-semibold">Category</th>
-              <th className="px-3 py-2 text-right font-semibold">CPU Time</th>
-              <th className="px-3 py-2 text-right font-semibold">Peak CPU</th>
-              <th className="px-3 py-2 text-right font-semibold">Peak Mem</th>
-              <th className="px-3 py-2 text-right font-semibold">Read</th>
-              <th className="px-3 py-2 text-right font-semibold">Write</th>
-              <th className="px-3 py-2 text-right font-semibold">Samples</th>
-              <th className="px-3 py-2 text-right font-semibold sm:pr-5">PID</th>
+              <th className="px-4 py-2 font-semibold sm:pl-5">{t("Process")}</th>
+              <th className="px-3 py-2 font-semibold">{t("Category")}</th>
+              <th className="px-3 py-2 text-right font-semibold">{t("CPU Time")}</th>
+              <th className="px-3 py-2 text-right font-semibold">{t("Peak CPU")}</th>
+              <th className="px-3 py-2 text-right font-semibold">{t("Peak Mem")}</th>
+              <th className="px-3 py-2 text-right font-semibold">{t("Read")}</th>
+              <th className="px-3 py-2 text-right font-semibold">{t("Write")}</th>
+              <th className="px-3 py-2 text-right font-semibold">{t("Samples")}</th>
+              <th className="px-3 py-2 text-right font-semibold sm:pr-5">{t("PID")}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border/50">
             {processes.length === 0 ? (
               <tr>
                 <td colSpan={9} className="px-4 py-5 text-xs text-muted-foreground sm:px-5">
-                  No retained process samples in this window.
+                  {t("No retained process samples in this window.")}
                 </td>
               </tr>
             ) : null}
@@ -712,7 +730,7 @@ function HistoryProcessTable({
                   </Tooltip>
                 </td>
                 <td className="truncate px-3 py-2 text-2xs text-muted-foreground">
-                  {categoryLabel(process.category)}
+                  {categoryLabel(process.category, t)}
                 </td>
                 <td className="px-3 py-2 text-right font-mono tabular-nums">
                   {formatCpuTime(process.cpuTimeMs)}
@@ -745,6 +763,7 @@ function HistoryProcessTable({
 }
 
 function AttributionTable({ entries }: { entries: ReadonlyArray<ResourceAttributionEntry> }) {
+  const t = useTranslation();
   return (
     <div className="overflow-x-auto border-t border-border/60">
       <table className="w-full min-w-[720px] table-fixed text-left text-xs">
@@ -758,19 +777,19 @@ function AttributionTable({ entries }: { entries: ReadonlyArray<ResourceAttribut
         </colgroup>
         <thead className="border-b border-border/60 text-3xs uppercase tracking-widest text-muted-foreground/65">
           <tr>
-            <th className="px-4 py-2 font-semibold sm:pl-5">Component</th>
-            <th className="px-3 py-2 font-semibold">Operation</th>
-            <th className="px-3 py-2 text-right font-semibold">Logical Read</th>
-            <th className="px-3 py-2 text-right font-semibold">Logical Write</th>
-            <th className="px-3 py-2 text-right font-semibold">Count</th>
-            <th className="px-3 py-2 text-right font-semibold sm:pr-5">Time</th>
+            <th className="px-4 py-2 font-semibold sm:pl-5">{t("Component")}</th>
+            <th className="px-3 py-2 font-semibold">{t("Operation")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{t("Logical Read")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{t("Logical Write")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{t("Count")}</th>
+            <th className="px-3 py-2 text-right font-semibold sm:pr-5">{t("Time")}</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-border/50">
           {entries.length === 0 ? (
             <tr>
               <td colSpan={6} className="px-4 py-5 text-xs text-muted-foreground sm:px-5">
-                No instrumented application I/O has been recorded yet.
+                {t("No instrumented application I/O has been recorded yet.")}
               </td>
             </tr>
           ) : null}
@@ -814,6 +833,7 @@ function ResourceTelemetryDiagnosticsBody({
 }: {
   environmentId: EnvironmentId | null;
 }) {
+  const t = useTranslation();
   const registry = useContext(RegistryContext);
   const [windowMs, setWindowMs] = useState(15 * 60_000);
   const selectedWindow =
@@ -965,12 +985,12 @@ function ResourceTelemetryDiagnosticsBody({
   return (
     <>
       <SettingsSection
-        title="Resource monitor"
+        title={t("Resource monitor")}
         icon={<ActivityIcon className="size-4 text-muted-foreground" />}
         headerAction={
           <div className="flex items-center gap-2">
             {snapshot ? (
-              <SourceStatusBadge label="Native" status={snapshot.health.native.status} />
+              <SourceStatusBadge label={t("Native")} status={snapshot.health.native.status} />
             ) : null}
             <LastSampleLabel sampledAt={snapshot?.readAt ?? null} />
             <Tooltip>
@@ -981,7 +1001,7 @@ function ResourceTelemetryDiagnosticsBody({
                     variant="ghost"
                     disabled={telemetry.isPending}
                     onClick={telemetry.refresh}
-                    aria-label="Refresh resource telemetry"
+                    aria-label={t("Refresh resource telemetry")}
                   >
                     <RefreshIcon size="xs" refreshing={telemetry.isPending} />
                   </Button>
@@ -996,28 +1016,30 @@ function ResourceTelemetryDiagnosticsBody({
           <div className="flex flex-col gap-3 border-b border-border/60 bg-linear-to-r from-muted/45 via-muted/20 to-transparent px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
             <div>
               <div className="text-3xs font-semibold uppercase tracking-widest text-muted-foreground/70">
-                T3 system footprint
+                {t("T3 system footprint")}
               </div>
               <p className="mt-1 max-w-xl text-xs leading-relaxed text-muted-foreground">
-                Live native counters for the server, providers, terminals, desktop processes, and
-                the monitor itself.
+                {t(
+                  "Live native counters for the server, providers, terminals, desktop processes, and the monitor itself.",
+                )}
               </p>
             </div>
             <div className="flex items-center gap-2 text-3xs text-muted-foreground/65">
               <span className="size-1.5 rounded-full bg-success" />
-              Sampling every {snapshot ? formatSampleInterval(snapshot.sampleIntervalMs) : "..."}
+              {t("Sampling every")}{" "}
+              {snapshot ? formatSampleInterval(snapshot.sampleIntervalMs) : "..."}
             </div>
           </div>
           <div className="grid grid-cols-2 divide-x divide-y divide-border/55 md:grid-cols-3">
             <IconStat
               icon={<CpuIcon className="size-3.5" />}
-              label="Current CPU"
+              label={t("Current CPU")}
               value={allT3 ? `${allT3.currentCpuPercent.toFixed(1)}%` : "..."}
               detail={allT3 ? `${formatCpuTime(allT3.cpuTimeMs)} observed CPU time` : undefined}
             />
             <IconStat
               icon={<MemoryStickIcon className="size-3.5" />}
-              label="Resident memory"
+              label={t("Resident memory")}
               value={allT3 ? formatBytes(allT3.currentRssBytes) : "..."}
               detail={
                 allT3 ? `${formatBytes(allT3.peakRssBytes)} combined process peaks` : undefined
@@ -1025,7 +1047,7 @@ function ResourceTelemetryDiagnosticsBody({
             />
             <IconStat
               icon={<ActivityIcon className="size-3.5" />}
-              label="Process count"
+              label={t("Process count")}
               value={allT3 ? String(allT3.processCount) : "..."}
               detail={
                 allT3 ? `${allT3.processStarts} starts · ${allT3.processExits} exits` : undefined
@@ -1033,13 +1055,13 @@ function ResourceTelemetryDiagnosticsBody({
             />
             <IconStat
               icon={<HardDriveIcon className="size-3.5" />}
-              label="Read throughput"
+              label={t("Read throughput")}
               value={allT3 ? formatRate(allT3.ioReadBytesPerSecond) : "..."}
               detail={allT3 ? `${formatBytes(allT3.ioReadBytes)} observed` : undefined}
             />
             <IconStat
               icon={<DatabaseIcon className="size-3.5" />}
-              label="Write throughput"
+              label={t("Write throughput")}
               value={allT3 ? formatRate(allT3.ioWriteBytesPerSecond) : "..."}
               detail={allT3 ? `${formatBytes(allT3.ioWriteBytes)} observed` : undefined}
               tone={
@@ -1052,7 +1074,7 @@ function ResourceTelemetryDiagnosticsBody({
             />
             <IconStat
               icon={<GaugeIcon className="size-3.5" />}
-              label="CPU speed limit"
+              label={t("CPU speed limit")}
               value={
                 snapshot ? (speedLimit === null ? "Unknown" : `${speedLimit.toFixed(0)}%`) : "..."
               }
@@ -1069,17 +1091,17 @@ function ResourceTelemetryDiagnosticsBody({
           {snapshot ? (
             <div className="grid border-t border-border/60 bg-muted/10 md:grid-cols-3">
               <AggregateCard
-                label="Backend + agents"
+                label={t("Backend + agents")}
                 accentClass="bg-success/80"
                 aggregate={snapshot.groups.backend}
               />
               <AggregateCard
-                label="Desktop"
+                label={t("Desktop")}
                 accentClass="bg-info/80"
                 aggregate={snapshot.groups.electron}
               />
               <AggregateCard
-                label="Monitor overhead"
+                label={t("Monitor overhead")}
                 accentClass="bg-warning/80"
                 aggregate={snapshot.groups.monitor}
               />
@@ -1089,13 +1111,13 @@ function ResourceTelemetryDiagnosticsBody({
       </SettingsSection>
 
       <SettingsSection
-        title="Host & collection"
+        title={t("Host & collection")}
         icon={<GaugeIcon className="size-4 text-muted-foreground" />}
         headerAction={
           collectorNeedsRetry ? (
             <Button size="xs" variant="outline" disabled={isRetrying} onClick={retryCollector}>
               <RefreshIcon size="xs" refreshing={isRetrying} />
-              Retry monitor
+              {t("Retry monitor")}
             </Button>
           ) : null
         }
@@ -1106,48 +1128,48 @@ function ResourceTelemetryDiagnosticsBody({
               <span className="flex size-6 items-center justify-center rounded-md bg-muted/60">
                 <BatteryIcon className="size-3.5" />
               </span>
-              Host state
+              {t("Host state")}
             </div>
             {hasHostPowerSignal && snapshot ? (
               <>
                 <DetailRow
-                  label="Power source"
+                  label={t("Power source")}
                   value={booleanStateLabel(snapshot.power.onBattery, {
-                    true: "Battery",
-                    false: "External power",
-                  })}
+                    true: t("Battery"),
+                    false: t("External power"),
+                  }, t)}
                 />
                 <DetailRow
-                  label="Low power mode"
+                  label={t("Low power mode")}
                   value={booleanStateLabel(snapshot.power.lowPowerMode, {
-                    true: "Enabled",
-                    false: "Disabled",
-                  })}
+                    true: t("Enabled"),
+                    false: t("Disabled"),
+                  }, t)}
                 />
                 <DetailRow
-                  label="Idle"
+                  label={t("Idle")}
                   value={`${booleanStateLabel(snapshot.power.idle, {
-                    true: "Idle",
+                    true: t("Idle"),
                     false: "Active",
-                  })}${
+                  }, t)}${
                     snapshot.power.idleSeconds === null
                       ? ""
                       : ` · ${Math.round(snapshot.power.idleSeconds)}s`
                   }`}
                 />
                 <DetailRow
-                  label="Session"
+                  label={t("Session")}
                   value={
                     snapshot.power.suspended
-                      ? "Suspended"
+                      ? t("Suspended")
                       : booleanStateLabel(snapshot.power.locked, {
-                          true: "Locked",
-                          false: "Unlocked",
-                        })
+                          true: t("Locked"),
+                          false: t("Unlocked"),
+                        }, t)
                   }
                 />
                 <DetailRow
-                  label="Thermal"
+                  label={t("Thermal")}
                   value={snapshot.power.thermalState}
                   valueClassName={
                     snapshot.power.thermalState === "serious" ||
@@ -1160,11 +1182,12 @@ function ResourceTelemetryDiagnosticsBody({
             ) : (
               <div className="rounded-xl border border-dashed border-border/70 bg-muted/20 px-4 py-5">
                 <div className="text-sm font-medium text-foreground">
-                  Desktop host signals not connected
+                  {t("Desktop host signals not connected")}
                 </div>
                 <p className="mt-1.5 max-w-sm text-2xs leading-relaxed text-muted-foreground/70">
-                  Power, idle, lock, and thermal state are supplied by the desktop host. Process
-                  telemetry remains fully active in this browser session.
+                  {t(
+                    "Power, idle, lock, and thermal state are supplied by the desktop host. Process telemetry remains fully active in this browser session.",
+                  )}
                 </p>
               </div>
             )}
@@ -1174,22 +1197,22 @@ function ResourceTelemetryDiagnosticsBody({
               <span className="flex size-6 items-center justify-center rounded-md bg-muted/60">
                 <GaugeIcon className="size-3.5" />
               </span>
-              Collection health
+              {t("Collection health")}
             </div>
             {snapshot ? (
               <>
-                <HealthSource label="Native process monitor" health={snapshot.health.native} />
-                <HealthSource label="Electron main process" health={snapshot.health.desktop} />
+                <HealthSource label={t("Native process monitor")} health={snapshot.health.native} />
+                <HealthSource label={t("Electron main process")} health={snapshot.health.desktop} />
                 <DetailRow
-                  label="Collection time"
+                  label={t("Collection time")}
                   value={formatDurationMicros(snapshot.health.collectionDurationMicros)}
                 />
                 <DetailRow
-                  label="Process scan"
+                  label={t("Process scan")}
                   value={`${snapshot.health.retainedProcessCount}/${snapshot.health.scannedProcessCount} retained`}
                 />
                 <DetailRow
-                  label="Inaccessible"
+                  label={t("Inaccessible")}
                   value={String(snapshot.health.inaccessibleProcessCount)}
                   valueClassName={
                     snapshot.health.inaccessibleProcessCount > 0
@@ -1198,7 +1221,7 @@ function ResourceTelemetryDiagnosticsBody({
                   }
                 />
                 <DetailRow
-                  label="Sidecar"
+                  label={t("Sidecar")}
                   value={Option.match(snapshot.health.sidecarVersion, {
                     onNone: () => "Unavailable",
                     onSome: (version) =>
@@ -1208,11 +1231,11 @@ function ResourceTelemetryDiagnosticsBody({
                       })}`,
                   })}
                 />
-                <DetailRow label="Restarts" value={String(snapshot.health.restartCount)} />
+                <DetailRow label={t("Restarts")} value={String(snapshot.health.restartCount)} />
               </>
             ) : (
               <div className="py-4 text-xs text-muted-foreground">
-                Waiting for collector health.
+                {t("Waiting for collector health.")}
               </div>
             )}
           </div>
@@ -1220,7 +1243,7 @@ function ResourceTelemetryDiagnosticsBody({
       </SettingsSection>
 
       <SettingsSection
-        title="Resource timeline"
+        title={t("Resource timeline")}
         icon={<HardDriveIcon className="size-4 text-muted-foreground" />}
         headerAction={
           <div className="flex items-center gap-2">
@@ -1230,7 +1253,7 @@ function ResourceTelemetryDiagnosticsBody({
               variant="ghost"
               disabled={history.isPending}
               onClick={history.refresh}
-              aria-label="Refresh resource history"
+              aria-label={t("Refresh resource history")}
             >
               <RefreshIcon size="xs" refreshing={history.isPending} />
             </Button>
@@ -1250,12 +1273,12 @@ function ResourceTelemetryDiagnosticsBody({
       </SettingsSection>
 
       <SettingsSection
-        title="Live process tree"
+        title={t("Live process tree")}
         icon={<CpuIcon className="size-4 text-muted-foreground" />}
         headerAction={
           snapshot ? (
             <span className="text-3xs text-muted-foreground/55">
-              Identity: <span className="font-mono">PID + start time</span>
+              {t("Identity:")} <span className="font-mono">{t("PID + start time")}</span>
             </span>
           ) : null
         }
@@ -1271,17 +1294,19 @@ function ResourceTelemetryDiagnosticsBody({
       </SettingsSection>
 
       <SettingsSection
-        title="Instrumented application I/O"
+        title={t("Instrumented application I/O")}
         icon={<DatabaseIcon className="size-4 text-muted-foreground" />}
         headerAction={
-          <span className="text-3xs text-muted-foreground/55">Logical bytes by operation</span>
+          <span className="text-3xs text-muted-foreground/55">
+              {t("Logical bytes by operation")}
+            </span>
         }
       >
         <div className="overflow-hidden rounded-[inherit]">
           <div className="bg-muted/15 px-4 py-3 text-2xs leading-relaxed text-muted-foreground sm:px-5">
-            Native counters identify which process is reading or writing. These application-level
-            counters identify known T3 operations so process spikes can be correlated with specific
-            persistence and logging paths.
+            {t(
+              "Native counters identify which process is reading or writing. These application-level counters identify known T3 operations so process spikes can be correlated with specific persistence and logging paths.",
+            )}
           </div>
           <AttributionTable entries={snapshot?.attribution.entries ?? []} />
         </div>

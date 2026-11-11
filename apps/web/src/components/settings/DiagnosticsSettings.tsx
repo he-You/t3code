@@ -79,10 +79,11 @@ function StatBlock({
   tooltip?: ReactNode;
   tone?: "default" | "warning" | "danger";
 }) {
+  const t = useTranslation();
   return (
     <div className="min-w-0 border-border/60 px-4 py-3 sm:px-5">
       <div className="flex min-w-0 items-center gap-1.5 text-2xs font-medium uppercase tracking-widest text-muted-foreground/70">
-        <span className="min-w-0 truncate">{label}</span>
+        <span className="min-w-0 truncate">{t(label)}</span>
         {tooltip ? (
           <Tooltip>
             <TooltipTrigger
@@ -90,13 +91,15 @@ function StatBlock({
                 <button
                   type="button"
                   className="cursor-pointer inline-flex size-3.5 shrink-0 items-center justify-center rounded-sm text-muted-foreground/60 hover:text-foreground"
-                  aria-label={`${label} details`}
+                  aria-label={`${t(label)} ${t("details")}`}
                 >
                   <InfoIcon className="size-3" />
                 </button>
               }
             />
-            <TooltipPopup side="top">{tooltip}</TooltipPopup>
+            <TooltipPopup side="top">
+              {typeof tooltip === "string" ? t(tooltip) : tooltip}
+            </TooltipPopup>
           </Tooltip>
         ) : null}
       </div>
@@ -138,7 +141,8 @@ function StatsGrid({ children }: { children: ReactNode }) {
 }
 
 function EmptyRows({ label }: { label: string }) {
-  return <div className="px-4 py-4 text-xs text-muted-foreground sm:px-5">{label}</div>;
+  const t = useTranslation();
+  return <div className="px-4 py-4 text-xs text-muted-foreground sm:px-5">{t(label)}</div>;
 }
 
 function DiagnosticsTable({
@@ -152,6 +156,7 @@ function DiagnosticsTable({
   minTableWidth?: string;
   columnWidths?: ReadonlyArray<string>;
 }) {
+  const t = useTranslation();
   return (
     <ScrollArea
       radius="none"
@@ -180,7 +185,7 @@ function DiagnosticsTable({
                   !columnWidths && index === headers.length - 1 && "w-px",
                 )}
               >
-                {header.replaceAll(" ", "\u00a0")}
+                {t(header).replaceAll(" ", "\u00a0")}
               </th>
             ))}
           </tr>
@@ -454,7 +459,7 @@ function ResourceHistoryProcessNameCell({
     <div
       className="grid min-w-0 grid-cols-[1.25rem_0.375rem_minmax(0,1fr)] items-center gap-2"
       style={{ paddingLeft: `${Math.min(visualDepth, 6) * 10}px` }}
-      aria-label={`${process.isServerRoot ? "Root" : "Child"} process ${name}`}
+      aria-label={`${t(process.isServerRoot ? "Root" : "Child")} ${t("process")} ${name}`}
     >
       <span className="size-5 shrink-0" aria-hidden="true" />
       <span
@@ -794,7 +799,7 @@ function DiagnosticsSettingsBody() {
       if (result._tag === "Failure" && !isAtomCommandInterrupted(result)) {
         const error = squashAtomCommandFailure(result);
         setOpenLogsDirectoryError(
-          error instanceof Error ? error.message : "Unable to open logs folder.",
+          error instanceof Error ? error.message : t("Unable to open logs folder."),
         );
       }
     })();
@@ -842,7 +847,7 @@ function DiagnosticsSettingsBody() {
         clearSignaling();
         toastManager.add({
           type: "error",
-          title: "Could not confirm signal",
+          title: t("Could not confirm signal"),
           description: error instanceof Error ? error.message : `Failed to send ${signal}.`,
         });
         return;
@@ -881,8 +886,10 @@ function DiagnosticsSettingsBody() {
       if (isStaleProcessSignalMessage(message)) {
         toastManager.add({
           type: "info",
-          title: "Process already exited",
-          description: "The process is not a child of the T3 Server. It might already have exited.",
+          title: t("Process already exited"),
+          description: t(
+              "The process is not a child of the T3 Server. It might already have exited.",
+            ),
         });
         return;
       }
@@ -929,7 +936,7 @@ function DiagnosticsSettingsBody() {
             <DiagnosticsLastChecked checkedAt={processData?.readAt ?? null} />
             <DiagnosticsRefreshButton
               isPending={isProcessPending}
-              label="Refresh process diagnostics"
+              label={t("Refresh process diagnostics")}
               onClick={refreshProcesses}
             />
           </div>
@@ -995,7 +1002,7 @@ function DiagnosticsSettingsBody() {
             <DiagnosticsLastChecked checkedAt={resourceData?.readAt ?? null} />
             <DiagnosticsRefreshButton
               isPending={isResourcePending}
-              label="Refresh resource history"
+              label={t("Refresh resource history")}
               onClick={refreshResources}
             />
           </div>
@@ -1081,7 +1088,7 @@ function DiagnosticsSettingsBody() {
             </Tooltip>
             <DiagnosticsRefreshButton
               isPending={isPending}
-              label="Refresh trace diagnostics"
+              label={t("Refresh trace diagnostics")}
               onClick={refresh}
             />
           </div>
