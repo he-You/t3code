@@ -4,6 +4,7 @@ import { ChevronRightIcon, LayersIcon } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { cn } from "../../lib/utils";
+import { useTranslation } from "../../i18n";
 import type { SidebarProjectSnapshot } from "../../sidebarProjectGrouping";
 import { useEnvironments, type EnvironmentPresentation } from "../../state/environments";
 import { EnvironmentMachineIcon } from "../EnvironmentMachineIcon";
@@ -41,6 +42,7 @@ export function SettingsScopeNotice({
   targetId?: string;
   eligibleEnvironmentIds?: readonly EnvironmentId[];
 }) {
+  const t = useTranslation();
   const { selectScope, search, groups } = useSettingsScope();
   const navigate = useNavigate({ from: "/settings" });
   const pathname = useLocation({ select: (location) => location.pathname });
@@ -114,7 +116,7 @@ export function SettingsScopeNotice({
               })
           : [
               {
-                label: "Open all environments",
+                label: t("Open all environments"),
                 icon: <LayersIcon aria-hidden className="size-4 shrink-0 text-muted-foreground" />,
                 search: {},
               },
@@ -163,7 +165,7 @@ export function SettingsScopeNotice({
   const notice = (
     <div className="space-y-3">
       <p role="status" className="px-3 text-sm text-muted-foreground sm:px-4">
-        {children}
+        {t(children)}
       </p>
       <div className="space-y-4">
         {choiceGroups.map((group) =>
