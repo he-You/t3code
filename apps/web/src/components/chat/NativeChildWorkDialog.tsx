@@ -11,6 +11,7 @@ import { useState } from "react";
 import { orchestrationEnvironment } from "../../state/orchestration";
 import { useEnvironmentQuery } from "../../state/query";
 import { Button } from "../ui/button";
+import { useTranslation } from "../../i18n";
 import {
   Dialog,
   DialogDescription,
@@ -31,17 +32,20 @@ export function NativeChildWorkDialog(props: {
   readonly environmentId: EnvironmentId;
   readonly threadId: ThreadId;
 }) {
+  const t = useTranslation();
   const [open, setOpen] = useState(false);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <Button size="sm" variant="ghost" onClick={() => setOpen(true)}>
         <ListTreeIcon />
-        <span className="@max-[420px]/composer-surface:sr-only">Subagent work</span>
+        <span className="@max-[420px]/composer-surface:sr-only">{t("Subagent work")}</span>
       </Button>
       <DialogPopup className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Subagent work</DialogTitle>
-          <DialogDescription>Read only. These subagents cannot take messages.</DialogDescription>
+          <DialogTitle>{t("Subagent work")}</DialogTitle>
+          <DialogDescription>
+            {t("Read only. These subagents cannot take messages.")}
+          </DialogDescription>
         </DialogHeader>
         {open ? <NativeChildWorkContent {...props} /> : null}
       </DialogPopup>
@@ -53,6 +57,7 @@ function NativeChildWorkContent(props: {
   readonly environmentId: EnvironmentId;
   readonly threadId: ThreadId;
 }) {
+  const t = useTranslation();
   const query = useEnvironmentQuery<OrchestrationV2GetNativeChildWorkResult, unknown>(
     orchestrationEnvironment.nativeChildWork({
       environmentId: props.environmentId,
@@ -69,7 +74,7 @@ function NativeChildWorkContent(props: {
           <p className="text-sm text-muted-foreground">Loading…</p>
         ) : children.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            The provider has no record of which subagents this call started.
+            {t("The provider has no record of which subagents this call started.")}
           </p>
         ) : (
           children.map((child) => <NativeChild key={child.conversationId} child={child} />)
@@ -93,10 +98,10 @@ function NativeChild(props: { readonly child: OrchestrationV2NativeChildWork }) 
         {child.prompt}
       </p>
       {child.truncated ? (
-        <p className="text-xs text-muted-foreground">Earlier steps are not shown.</p>
+        <p className="text-xs text-muted-foreground">{t("Earlier steps are not shown.")}</p>
       ) : null}
       {child.steps === null ? (
-        <p className="text-xs text-muted-foreground">No transcript yet.</p>
+        <p className="text-xs text-muted-foreground">{t("No transcript yet.")}</p>
       ) : (
         <ol className="m-0 flex list-none flex-col gap-2 border-s ps-3">
           {child.steps.map((step) => (
@@ -109,6 +114,7 @@ function NativeChild(props: { readonly child: OrchestrationV2NativeChildWork }) 
 }
 
 function NativeChildStep(props: { readonly step: OrchestrationV2NativeChildStep }) {
+  const t = useTranslation();
   const { step } = props;
   return (
     <li className="flex min-w-0 flex-col gap-1">

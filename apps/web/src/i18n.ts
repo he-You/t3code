@@ -3255,6 +3255,14 @@ const chinese: Readonly<Record<string, string>> = {
   "This permanently clears its conversation history.": "这将永久清除其对话记录。",
   "Adds this side chat to the main thread's next message.": "将此侧边对话添加到主对话的下一条消息中。",
   "Delete side chat {title}?": "删除侧边对话“{title}”？",
+  "A new link ends the current one.": "新链接会使当前链接失效。",
+  "The link works once and expires in 24 hours.": "链接仅可使用一次，24 小时后过期。",
+  "Creating...": "正在创建...",
+  "{name} is a guest": "{name} 是访客",
+  "Guest link active": "访客链接有效",
+  "Link a machine to this environment": "将设备关联到此环境",
+  "Link {target} to this environment": "将 {target} 关联到此环境",
+  "Link {target}": "关联 {target}",
 };
 
 export function translate(language: InterfaceLanguage, text: string): string {
