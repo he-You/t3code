@@ -1240,7 +1240,7 @@ export default function GitActionsControl({
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Action failed",
+          title: t("Action failed"),
           description: error instanceof Error ? error.message : "An error occurred.",
           timeout: errorToastTiming.timeout,
           ...(scopedToastData !== undefined ? { data: scopedToastData } : {}),
@@ -1314,7 +1314,7 @@ export default function GitActionsControl({
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Pull failed",
+              title: t("Pull failed"),
               description: error instanceof Error ? error.message : "An error occurred.",
               timeout: errorToastTiming.timeout,
               ...(threadToastData !== undefined ? { data: threadToastData } : {}),
@@ -1385,7 +1385,7 @@ export default function GitActionsControl({
     if (workingTreeRoot === null) {
       toastManager.add({
         type: "error",
-        title: "Editor opening is unavailable.",
+        title: t("Editor opening is unavailable."),
         data: threadToastData,
       });
       return;
@@ -1400,7 +1400,7 @@ export default function GitActionsControl({
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Unable to open file",
+          title: t("Unable to open file"),
           description: error instanceof Error ? error.message : "An error occurred.",
           ...(threadToastData !== undefined ? { data: threadToastData } : {}),
         }),
@@ -1421,7 +1421,7 @@ export default function GitActionsControl({
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Git initialization failed",
+          title: t("Git initialization failed"),
           description: error instanceof Error ? error.message : "An error occurred.",
           ...(threadToastData !== undefined ? { data: threadToastData } : {}),
         }),

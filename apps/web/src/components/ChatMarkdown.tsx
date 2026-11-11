@@ -1,4 +1,5 @@
 import { buildFileLinkParentSuffixByPath, fileLinkLabel } from "@t3tools/shared/fileLinks";
+import { useTranslation } from "../i18n";
 import {
   isWindowsDrivePathHref,
   normalizeMarkdownLinkDestination,
@@ -280,13 +281,14 @@ function CodexArtifactTemplateCard(props: {
   readonly template: CodexArtifactTemplate;
   readonly onUse?: ((template: CodexArtifactTemplate) => void) | undefined;
 }) {
+  const t = useTranslation();
   const Icon = ARTIFACT_TEMPLATE_ICON_BY_KIND[props.template.artifactKind];
   const presentationLabel = codexArtifactTemplatePresentationLabel(props.template.artifactKind);
 
   return (
     <div
       role="group"
-      aria-label={`${props.template.displayName} template`}
+      aria-label={`${props.template.displayName} ${t("template")}`}
       data-chat-markdown-artifact-template
       className="my-[0.65rem] flex w-full min-w-0 items-center gap-3 rounded-xl border border-border/70 bg-card/60 px-3 py-2.5 text-foreground shadow-xs"
       data-artifact-kind={props.template.artifactKind}
@@ -316,7 +318,7 @@ function CodexArtifactTemplateCard(props: {
           className="shrink-0"
           onClick={() => props.onUse?.(props.template)}
         >
-          Use template
+          {t("Use template")}
         </Button>
       ) : null}
     </div>
@@ -500,6 +502,7 @@ function useChatMarkdownState({
   sourceControlMedia = false,
   sourceControlMediaRepository,
 }: ChatMarkdownProps) {
+  const t = useTranslation();
   const resolvedTheme = useRenderedAppearance();
   const markdownRef = useRef<HTMLElement>(null);
   const mediaRequestId = useRef(0);
@@ -614,7 +617,7 @@ function useChatMarkdownState({
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Media unavailable",
+            title: t("Media unavailable"),
             description,
           }),
         );
@@ -707,7 +710,7 @@ function useChatMarkdownState({
         AsyncResult.failure<void, BrowserPreviewUnavailableError>(
           Cause.fail(
             new BrowserPreviewUnavailableError({
-              message: "Preview access is unavailable for this client.",
+              message: t("Preview access is unavailable for this client."),
             }),
           ),
         ),
@@ -721,7 +724,7 @@ function useChatMarkdownState({
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Unable to open link in browser",
+              title: t("Unable to open link in browser"),
               description: error.message,
             }),
           );
@@ -737,7 +740,7 @@ function useChatMarkdownState({
         AsyncResult.failure<void, BrowserPreviewUnavailableError>(
           Cause.fail(
             new BrowserPreviewUnavailableError({
-              message: "Environment is not connected.",
+              message: t("Environment is not connected."),
             }),
           ),
         ),
@@ -986,6 +989,7 @@ const CHAT_MARKDOWN_COMPONENTS = {
     );
   },
   blockquote: function MarkdownBlockquote({ node: _node, children, ...props }) {
+    const t = useTranslation();
     const alert =
       GITHUB_ALERT_PRESENTATIONS[String((props as Record<string, unknown>)["data-alert"] ?? "")];
     if (!alert) {
@@ -1002,7 +1006,7 @@ const CHAT_MARKDOWN_COMPONENTS = {
           className={cn("flex items-center gap-1.5 font-medium", alert.titleClassName)}
         >
           <alert.Icon aria-hidden className="size-3.5 shrink-0" />
-          {alert.label}
+          {t(alert.label)}
         </p>
         {children}
       </div>
@@ -1028,6 +1032,7 @@ const CHAT_MARKDOWN_COMPONENTS = {
     );
   },
   input: function MarkdownInput({ node: _node, type, checked, disabled: _disabled, ...props }) {
+    const t = useTranslation();
     const { onTaskListChange } = use(ChatMarkdownRendererContext);
     const text = use(ChatMarkdownTextContext);
     if (type !== "checkbox" || !onTaskListChange) {
@@ -1046,7 +1051,7 @@ const CHAT_MARKDOWN_COMPONENTS = {
         {...props}
         type="checkbox"
         name="markdown-task"
-        aria-label="Toggle task"
+        aria-label={t("Toggle task")}
         checked={checked === true}
         onChange={(event) => {
           const listItemStart = Number(event.currentTarget.closest("li")?.dataset.listItemOffset);
@@ -1260,9 +1265,10 @@ const CHAT_MARKDOWN_COMPONENTS = {
                       type: "error",
                       title:
                         operation === "link-pull-request-to-thread"
-                          ? "Unable to link pull request"
-                          : "Unable to unlink pull request",
-                      description: cause instanceof Error ? cause.message : "The request failed.",
+                          ? t("Unable to link pull request")
+                          : t("Unable to unlink pull request"),
+                      description:
+                        cause instanceof Error ? cause.message : t("The request failed."),
                     }),
                   );
                 }
@@ -1626,7 +1632,7 @@ const CHAT_MARKDOWN_COMPONENTS = {
           isStreaming={isStreaming && !isClosedCodeFence(node, text, codeBlock.code)}
           onExpand={(src) =>
             expandMedia({
-              images: [{ src, name: "Mermaid diagram", mimeType: "image/svg+xml" }],
+              images: [{ src, name: t("Mermaid diagram"), mimeType: "image/svg+xml" }],
               index: 0,
             })
           }
