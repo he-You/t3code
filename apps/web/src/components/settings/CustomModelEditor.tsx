@@ -207,7 +207,7 @@ export function CustomModelEditor({
                 <SelectItem key={preset.id} value={preset.id}>
                   <span className="flex items-baseline gap-2">
                     <code className="font-mono text-xs">{preset.id}</code>
-                    <span className="text-muted-foreground">{preset.label}</span>
+                    <span className="text-muted-foreground">{t(preset.label)}</span>
                   </span>
                 </SelectItem>
               ))}
@@ -351,7 +351,7 @@ export function CustomModelEditor({
                 onClick={() => addDescriptor(descriptorFromPreset(preset))}
               >
                 <PlusIcon className="size-3" />
-                {preset.label}
+                {t(preset.label)}
               </Button>
             ))}
           <Button

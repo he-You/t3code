@@ -18,6 +18,7 @@ import { persistClientSettingsPatch, useMergedSettings } from "../../hooks/useSe
 import { serverEnvironment } from "../../state/server";
 import { useAtomCommand } from "../../state/use-atom-command";
 import { toastManager } from "../ui/toast";
+import { useTranslation } from "../../i18n";
 import { useOptionalSettingsScope, useSettingsScope } from "./SettingsScopeContext";
 import {
   persistScopedSettingsPatch,
@@ -48,12 +49,13 @@ export function useScopedSettingSource(keys: readonly (keyof ServerSettings)[]) 
 }
 
 function useRunScopedPlan() {
+  const t = useTranslation();
   const persistServer = useAtomCommand(serverEnvironment.updateSettings, { reportFailure: false });
   return (plan: ReturnType<typeof planScopedSettingsPatch>, onFailed?: () => void) => {
     if (plan.unavailableReason) {
       toastManager.add({
         type: "warning",
-        title: "Setting not saved",
+        title: t("Setting not saved"),
         description: plan.unavailableReason,
       });
       onFailed?.();
@@ -70,7 +72,7 @@ function useRunScopedPlan() {
             Cause.fail(
               new EnvironmentAuthorizationError({
                 requiredScope: missing,
-                message: "This connection lacks permission to change these settings.",
+                message: t("This connection lacks permission to change these settings."),
               }),
             ),
           );
@@ -83,10 +85,15 @@ function useRunScopedPlan() {
       toastManager.add({
         type: "error",
         title:
-          savedEnvironmentCount > 0 ? "Setting saved on some environments" : "Setting not saved",
+          savedEnvironmentCount > 0
+            ? t("Setting saved on some environments")
+            : t("Setting not saved"),
         description: [
           ...failedEnvironments.map(
-            ({ label, message }) => `Could not save on ${label}: ${message}`,
+            ({ label, message }) =>
+              t("Could not save on {label}: {message}")
+                .replace("{label}", label)
+                .replace("{message}", message),
           ),
           ...(savedEnvironmentCount > 0
             ? [`Saved on ${savedEnvironments.map(({ label }) => label).join(", ")}.`]

@@ -3,6 +3,7 @@ import type {
   ServerProviderVersionAdvisory,
   ServerProviderCompatibilityAdvisory,
 } from "@t3tools/contracts";
+import { readInterfaceLanguage, translate } from "../../i18n";
 
 export const PROVIDER_STATUS_STYLES = {
   disabled: {
@@ -48,7 +49,10 @@ export function getProviderSummary(provider: ServerProvider | undefined) {
   if (!provider) {
     return {
       headline: "Checking provider status",
-      detail: "Waiting for the server to report installation and authentication details.",
+      detail: translate(
+    readInterfaceLanguage(),
+    "Waiting for the server to report installation and authentication details.",
+  ),
     };
   }
   if (!provider.enabled || provider.status === "disabled") {

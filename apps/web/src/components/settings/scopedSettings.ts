@@ -25,6 +25,7 @@ import * as Equal from "effect/Equal";
 import * as Cause from "effect/Cause";
 
 import type { ResolvedSettingsScope } from "./settingsScope";
+import { readInterfaceLanguage, translate } from "../../i18n";
 
 export type ScopedSettingsPatch = ServerSettingsPatch & ClientSettingsPatch;
 
@@ -327,10 +328,22 @@ export function planScopedSettingsPatch(
       : scope.kind === "unavailable"
         ? scope.message
         : unscopableKeys.length > 0
-          ? "This setting is environment-wide and cannot be overridden by a project."
+          ? translate(
+              readInterfaceLanguage(),
+              "This setting is environment-wide and cannot be overridden by a project.",
+            )
           : isProjectScope
-            ? "Connect the selected checkouts, or update their environments, to save a project override."
-            : `Connect ${scope.kind === "environment" ? scope.label : "an environment"} to save this setting.`;
+            ? translate(
+                readInterfaceLanguage(),
+                "Connect the selected checkouts, or update their environments, to save a project override.",
+              )
+            : translate(
+                readInterfaceLanguage(),
+                "Connect {environment} to save this setting.",
+              ).replace(
+                "{environment}",
+                scope.kind === "environment" ? scope.label : translate(readInterfaceLanguage(), "an environment"),
+              );
   return { clientPatch, hasClientWrite, serverWrites, unavailableReason };
 }
 
@@ -475,7 +488,10 @@ export async function persistScopedSettingsPatch(
       return [
         {
           ...environment,
-          message: "This environment does not support this setting. Update T3 Code on it.",
+          message: translate(
+            readInterfaceLanguage(),
+            "This environment does not support this setting. Update T3 Code on it.",
+          ),
         },
       ];
     }

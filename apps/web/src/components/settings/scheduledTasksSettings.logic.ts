@@ -30,6 +30,7 @@ import {
 import type { ProviderInstanceEntry } from "../../providerInstances";
 
 import type { ResolvedSettingsScope } from "./settingsScope";
+import { readInterfaceLanguage, translate } from "../../i18n";
 
 export function matchesScheduledTaskScope(
   scope: ResolvedSettingsScope,
@@ -112,14 +113,18 @@ export function toDateTimeLocalValue(date: Date): string {
 }
 
 export function scheduleDraftErrors(draft: DraftState) {
+  const tr = (text: string) => translate(readInterfaceLanguage(), text);
   if (draft.scheduleMode === "once") {
     const runAt = new Date(draft.runAt);
     if (Number.isNaN(runAt.getTime()))
-      return [{ title: "Invalid run time", description: "Pick a date and time." }];
+      return [{ title: tr("Invalid run time"), description: tr("Pick a date and time.") }];
     // A time skipped by a daylight saving change parses to a different clock time.
     if (toDateTimeLocalValue(runAt) !== draft.runAt)
       return [
-        { title: "Invalid run time", description: "That time does not exist in your time zone." },
+        {
+          title: tr("Invalid run time"),
+          description: tr("That time does not exist in your time zone."),
+        },
       ];
     return [];
   }
@@ -127,8 +132,11 @@ export function scheduleDraftErrors(draft: DraftState) {
   if (parseMaxDeliveryAge(draft.maxDeliveryAgeMinutes) === undefined)
     return [
       {
-        title: "Invalid age limit",
-        description: `Enter whole minutes from 1 to ${MAX_WEBHOOK_DELIVERY_AGE_MINUTES}, or leave it blank.`,
+        title: tr("Invalid age limit"),
+        description: tr("Enter whole minutes from 1 to {max}, or leave it blank.").replace(
+          "{max}",
+          String(MAX_WEBHOOK_DELIVERY_AGE_MINUTES),
+        ),
       },
     ];
   const errors: Array<{ title: string; description: string }> = [];
@@ -138,15 +146,18 @@ export function scheduleDraftErrors(draft: DraftState) {
   ] as const) {
     if (value.trim() && !isWebhookDedupeTemplate(value.trim()))
       errors.push({
-        title: "Invalid webhook settings",
-        description: `${label} must contain a valid request placeholder.`,
+        title: tr("Invalid webhook settings"),
+        description: tr("{label} must contain a valid request placeholder.").replace(
+          "{label}",
+          tr(label),
+        ),
       });
   }
   const window = draft.coalesceWindowSeconds.trim();
   if (window && (!Number.isInteger(Number(window)) || Number(window) < 10 || Number(window) > 3600))
     errors.push({
-      title: "Invalid webhook settings",
-      description: "Coalesce window must be whole seconds from 10 to 3600.",
+      title: tr("Invalid webhook settings"),
+      description: tr("Coalesce window must be whole seconds from 10 to 3600."),
     });
   return errors;
 }
@@ -155,7 +166,8 @@ export function webhookDeliveryLabel(delivery: {
   readonly outcome: string;
   readonly pendingWindow?: boolean | undefined;
 }) {
-  if (delivery.outcome === "accepted") return delivery.pendingWindow ? "Opened window" : "Ran";
+  const tr = (text: string) => translate(readInterfaceLanguage(), text);
+  if (delivery.outcome === "accepted") return delivery.pendingWindow ? tr("Opened window") : tr("Ran");
   const labels: Record<string, string> = {
     dispatch_failed: "Run failed",
     duplicate: "Duplicate",
@@ -166,7 +178,7 @@ export function webhookDeliveryLabel(delivery: {
     rate_limited: "Rate limited",
     expired: "Too old",
   };
-  return labels[delivery.outcome] ?? delivery.outcome.replaceAll("_", " ");
+  return tr(labels[delivery.outcome] ?? delivery.outcome.replaceAll("_", " "));
 }
 
 export function scheduleFromDraft(draft: DraftState): ScheduledTaskUpsertSchedule | null {
