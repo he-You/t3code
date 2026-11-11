@@ -5,6 +5,7 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group"
 import { cn } from "~/lib/utils";
 import { formatThreadFindCount } from "./threadFind";
 import { THREAD_DETAILS_CARD_GAP } from "./threadDetailsCardLayout";
+import { useTranslation } from "../../i18n";
 
 interface ThreadFindBarProps {
   readonly open: boolean;
@@ -24,6 +25,7 @@ interface ThreadFindBarProps {
 export const THREAD_FIND_BAR_RESERVED_HEIGHT = 36 + THREAD_DETAILS_CARD_GAP;
 
 export function ThreadFindBar(props: ThreadFindBarProps) {
+  const t = useTranslation();
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- focuses and selects the input DOM node when the bar opens or a find shortcut fires
@@ -46,7 +48,7 @@ export function ThreadFindBar(props: ThreadFindBarProps) {
     label = props.counting ? "1/…" : formatThreadFindCount(props.activeIndex, props.matchCount);
   }
   if (props.status === "loading") label = "Searching…";
-  if (props.status === "error") label = "Search failed";
+  if (props.status === "error") label = t("Search failed");
   const navigationDisabled =
     props.matchCount === 0 || props.status === "loading" || props.counting === true;
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -104,7 +106,7 @@ export function ThreadFindBar(props: ThreadFindBarProps) {
           <Button
             size="icon-xs"
             variant="ghost"
-            aria-label="Previous match"
+            aria-label={t("Previous match")}
             disabled={navigationDisabled}
             onClick={props.onPrevious}
           >
@@ -113,13 +115,18 @@ export function ThreadFindBar(props: ThreadFindBarProps) {
           <Button
             size="icon-xs"
             variant="ghost"
-            aria-label="Next match"
+            aria-label={t("Next match")}
             disabled={navigationDisabled}
             onClick={props.onNext}
           >
             <ChevronDownIcon />
           </Button>
-          <Button size="icon-xs" variant="ghost" aria-label="Close find" onClick={props.onClose}>
+          <Button
+            size="icon-xs"
+            variant="ghost"
+            aria-label={t("Close find")}
+            onClick={props.onClose}
+          >
             <XIcon />
           </Button>
         </InputGroupAddon>
