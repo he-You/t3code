@@ -134,7 +134,12 @@ import { isCommandPaletteOpen, openCommandPalette } from "../commandPaletteBus";
 import { registerSettleAndAdvance } from "../settleAndAdvance";
 import { startNewThreadFromContext } from "../lib/chatThreadActions";
 import { useClientSettings } from "../hooks/useSettings";
-import { useInterfaceLanguage, useTranslation } from "../i18n";
+import {
+  readInterfaceLanguage,
+  translate,
+  useInterfaceLanguage,
+  useTranslation,
+} from "../i18n";
 import { threadConfirmation } from "../threadConfirmation";
 import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
 import { useLocalStorage } from "../hooks/useLocalStorage";
@@ -804,6 +809,7 @@ function isOptimisticDropReleased(input: {
 
 // Build maps in a hook so the compiler can prove they are frozen and cache them.
 function useSidebarLookups() {
+  const t = useTranslation();
   const projects = useProjects();
   const environments = useEnvironmentIdentities();
   const serverConfigs = useServerConfigs();
@@ -826,7 +832,7 @@ function useSidebarLookups() {
     projectGroups.map((project) => [project.projectKey, project] as const),
   );
   const projectScopeItems = [
-    { value: "all", label: "All projects" },
+    { value: "all", label: t("All projects") },
     ...pickableProjectGroups(projectGroups).map((project) => ({
       value: project.projectKey,
       label: project.displayName,
@@ -870,10 +876,14 @@ function checkThreadOperations(
   threads: ReadonlyArray<Pick<SidebarThreadSummary, "environmentId">>,
 ): boolean {
   if (canOperateThreads(threads)) return true;
+  const language = readInterfaceLanguage();
   toastManager.add({
     type: "error",
-    title: "Thread action unavailable",
-    description: "This connection cannot change one or more selected threads.",
+    title: translate(language, "Thread action unavailable"),
+    description: translate(
+      language,
+      "This connection cannot change one or more selected threads.",
+    ),
   });
   return false;
 }
@@ -943,7 +953,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
     onCopy: ({ path }) => {
       toastManager.add({
         type: "success",
-        title: "Path copied",
+        title: t("Path copied"),
         description: path,
       });
     },
@@ -951,7 +961,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Failed to copy path",
+          title: t("Failed to copy path"),
           description: error instanceof Error ? error.message : "An error occurred.",
         }),
       );
@@ -962,7 +972,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
     onCopy: ({ branch }) => {
       toastManager.add({
         type: "success",
-        title: "Branch copied",
+        title: t("Branch copied"),
         description: branch,
       });
     },
@@ -970,7 +980,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Failed to copy branch",
+          title: t("Failed to copy branch"),
           description: error instanceof Error ? error.message : "An error occurred.",
         }),
       );
@@ -980,7 +990,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
     onCopy: ({ threadId }) => {
       toastManager.add({
         type: "success",
-        title: "Thread ID copied",
+        title: t("Thread ID copied"),
         description: threadId,
       });
     },
@@ -988,7 +998,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Failed to copy thread ID",
+          title: t("Failed to copy thread ID"),
           description: error instanceof Error ? error.message : "An error occurred.",
         }),
       );
@@ -1262,16 +1272,16 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
         const clicked = await settlePromise(() =>
           api.contextMenu.show(
             [
-              { id: "new-thread", label: "New thread" },
-              { id: "copy-path", label: "Copy path" },
+              { id: "new-thread", label: t("New thread") },
+              { id: "copy-path", label: t("Copy path") },
               ...(canPinProject(group)
                 ? [
                     group.pinned
-                      ? { id: "unpin", label: "Unpin project", icon: "pin-off" }
-                      : { id: "pin", label: "Pin project", icon: "pin" },
+                      ? { id: "unpin", label: t("Unpin project"), icon: "pin-off" }
+                      : { id: "pin", label: t("Pin project"), icon: "pin" },
                   ]
                 : []),
-              { id: "project-settings", label: "Project settings", icon: "settings" },
+              { id: "project-settings", label: t("Project settings"), icon: "settings" },
             ],
             position,
           ),
@@ -1538,7 +1548,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
       const trimmed = title.trim();
       setRenamingThreadRef(null);
       if (trimmed.length === 0) {
-        toastManager.add({ type: "warning", title: "Thread title cannot be empty" });
+        toastManager.add({ type: "warning", title: t("Thread title cannot be empty") });
         return;
       }
       if (trimmed === originalTitle) return;
@@ -1551,7 +1561,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Failed to rename thread",
+            title: t("Failed to rename thread"),
             description: error instanceof Error ? error.message : "An error occurred.",
           }),
         );
@@ -1622,7 +1632,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Failed to settle thread",
+              title: t("Failed to settle thread"),
               description: error instanceof Error ? error.message : "An error occurred.",
             }),
           );
@@ -1660,7 +1670,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Failed to un-settle thread",
+            title: t("Failed to un-settle thread"),
             description: error instanceof Error ? error.message : "An error occurred.",
           }),
         );
@@ -1675,7 +1685,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Failed to wake thread",
+            title: t("Failed to wake thread"),
             description: error instanceof Error ? error.message : "An error occurred.",
           }),
         );
@@ -1873,7 +1883,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Failed to pin thread",
+            title: t("Failed to pin thread"),
             description: error instanceof Error ? error.message : "An error occurred.",
           }),
         );
@@ -1888,7 +1898,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Failed to unpin thread",
+            title: t("Failed to unpin thread"),
             description: error instanceof Error ? error.message : "An error occurred.",
           }),
         );
@@ -2266,7 +2276,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Failed to snooze thread",
+            title: t("Failed to snooze thread"),
             description:
               outcome.error instanceof Error ? outcome.error.message : "An error occurred.",
           }),
@@ -2332,14 +2342,14 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
               : []),
             {
               id: "settle",
-              label: `Settle (${count})`,
+              label: `${t("Settle")} (${count})`,
               disabled: settlingThreads.length === 0 || !canOperateThreads(settlingThreads),
             },
             ...(canSnoozeSelection
               ? [
                   {
                     id: "snooze",
-                    label: `Snooze (${count})`,
+                    label: `${t("Snooze")} (${count})`,
                     disabled: !canOperateThreads(selectedThreads),
                     children: [
                       ...snoozePresets.map((preset) => ({
@@ -2349,7 +2359,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
                       })),
                       {
                         id: "snooze:custom",
-                        label: "Custom…",
+                        label: t("Custom…"),
                         separatorBefore: snoozePresets.length > 0,
                         disabled: !canOperateThreads(selectedThreads),
                       },
@@ -2367,10 +2377,10 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
                   },
                 ]
               : []),
-            { id: "mark-unread", label: `Mark unread (${count})` },
+            { id: "mark-unread", label: `${t("Mark unread")} (${count})` },
             {
               id: "delete",
-              label: `Delete (${count})`,
+              label: `${t("Delete")} (${count})`,
               destructive: true,
               disabled: !canOperateThreads(selectedThreads),
             },
@@ -2457,7 +2467,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
             toastManager.add(
               stackedThreadToast({
                 type: "error",
-                title: "Failed to regenerate thread titles",
+                title: t("Failed to regenerate thread titles"),
                 description: error instanceof Error ? error.message : "An error occurred.",
               }),
             );
@@ -2517,7 +2527,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Failed to delete threads",
+            title: t("Failed to delete threads"),
             description: firstError instanceof Error ? firstError.message : "An error occurred.",
           }),
         );
@@ -2711,7 +2721,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
               toastManager.add(
                 stackedThreadToast({
                   type: "error",
-                  title: "Could not create thread",
+                  title: t("Could not create thread"),
                   description: error instanceof Error ? error.message : "An error occurred.",
                 }),
               );
@@ -2738,7 +2748,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
             if (result._tag === "Success") {
               toastManager.add({
                 type: "success",
-                title: "Project created",
+                title: t("Project created"),
                 description: thread.title,
               });
             } else if (!isAtomCommandInterrupted(result)) {
@@ -2746,7 +2756,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
               toastManager.add(
                 stackedThreadToast({
                   type: "error",
-                  title: "Could not turn thread into a project",
+                  title: t("Could not turn thread into a project"),
                   description: error instanceof Error ? error.message : "An error occurred.",
                 }),
               );
@@ -2764,7 +2774,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
               toastManager.add(
                 stackedThreadToast({
                   type: "error",
-                  title: "Failed to update auto-settle",
+                  title: t("Failed to update auto-settle"),
                   description: error instanceof Error ? error.message : "An error occurred.",
                 }),
               );
@@ -2788,7 +2798,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
               toastManager.add(
                 stackedThreadToast({
                   type: "error",
-                  title: "Failed to regenerate thread title",
+                  title: t("Failed to regenerate thread title"),
                   description: error instanceof Error ? error.message : "An error occurred.",
                 }),
               );
@@ -2803,8 +2813,8 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
               toastManager.add(
                 stackedThreadToast({
                   type: "error",
-                  title: "Path unavailable",
-                  description: "This thread does not have a workspace path to copy.",
+                  title: t("Path unavailable"),
+                  description: t("This thread does not have a workspace path to copy."),
                 }),
               );
               return;
@@ -2867,7 +2877,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
               toastManager.add(
                 stackedThreadToast({
                   type: "error",
-                  title: "Failed to delete thread",
+                  title: t("Failed to delete thread"),
                   description: error instanceof Error ? error.message : "An error occurred.",
                 }),
               );
@@ -3504,7 +3514,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
                               <SidebarDragBoundary
                                 key="pinned-header"
                                 marker="pinned-header"
-                                label="Pinned"
+                                label={t("Pinned")}
                                 visible={from !== null}
                                 isDropTarget={dragTargetSection === "pinned"}
                               />,
@@ -3515,7 +3525,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
                               <SidebarDragBoundary
                                 key="pinned-divider"
                                 marker="pinned-divider"
-                                label="Active"
+                                label={t("Active")}
                                 visible={from !== null}
                                 isDropTarget={dragTargetSection === "active"}
                               />,
@@ -3526,7 +3536,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
                               <SidebarSectionPlaceholder
                                 key="active-placeholder"
                                 marker="active-placeholder"
-                                label="Active"
+                                label={t("Active")}
                                 showHint={
                                   from !== null &&
                                   (activeThreads.length === 0 ||
@@ -3545,7 +3555,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
                                 key="working-shelf-header"
                                 marker="working-header"
                                 className="mt-auto"
-                                label="Working"
+                                label={t("Working")}
                                 count={workingThreads.length}
                                 toggle={{
                                   expanded: workingShelfExpanded,
@@ -3560,7 +3570,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
                                 key="snoozed-shelf-header"
                                 marker="snoozed-header"
                                 className={cn(workingThreads.length === 0 && "mt-auto")}
-                                label="Snoozed"
+                                label={t("Snoozed")}
                                 count={snoozedThreads.length}
                                 toggle={{
                                   expanded: snoozedShelfExpanded,
@@ -3577,7 +3587,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
                                 className={cn(
                                   workingThreads.length + snoozedThreads.length === 0 && "mt-auto",
                                 )}
-                                label="Settled"
+                                label={t("Settled")}
                                 count={settledCount}
                                 dragging={from !== null}
                                 isDropTarget={dragTargetSection === "settled"}
@@ -3593,7 +3603,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
                               <SidebarSectionPlaceholder
                                 key="settled-placeholder"
                                 marker="settled-placeholder"
-                                label="Settled"
+                                label={t("Settled")}
                                 showHint={
                                   from !== null &&
                                   (renderedSettledThreads.length === 0 ||
