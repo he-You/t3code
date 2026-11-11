@@ -149,7 +149,11 @@ export function SnapShotSettings() {
     shortcutChanged && candidateConflict === null && shortcutCheck.availability?.available === true;
   const soundSelection = settings.snapShotPlaySound ? settings.snapShotSound : "off";
   const soundLabel =
-    soundSelection === "off" ? "Off" : soundSelection === "soft-pop" ? "Whoosh (Default)" : "Click";
+    soundSelection === "off"
+      ? t("Off")
+      : soundSelection === "soft-pop"
+        ? t("Whoosh (Default)")
+        : t("Click");
 
   const setup = async (action: DesktopSnapShotSetupAction) => {
     if (!bridge || setupBusy) return;
@@ -225,7 +229,7 @@ export function SnapShotSettings() {
         savedShortcut,
         availability: {
           available: false,
-          message: error instanceof Error ? error.message : "Could not check this shortcut.",
+          message: error instanceof Error ? error.message : t("Could not check this shortcut."),
         },
       });
     }
@@ -428,7 +432,7 @@ export function SnapShotSettings() {
                       disabled={setupBusy}
                       onClick={() => void openSetup("shortcut")}
                     >
-                      Change shortcut
+                      {t("Change shortcut")}
                     </Button>
                   ) : (
                     <>
@@ -465,7 +469,7 @@ export function SnapShotSettings() {
                           disabled={setupBusy || state.shortcutPending}
                           onClick={() => void setup("retry-shortcut")}
                         >
-                          Shortcut permissions
+                          {t("Shortcut permissions")}
                         </Button>
                       ) : null}
                     </>
@@ -478,19 +482,20 @@ export function SnapShotSettings() {
                 control={
                   <Menu>
                     <MenuTrigger
-                      aria-label={"Snapshot sound: " + soundLabel}
+                      aria-label={`${t("Snapshot sound")}: ${soundLabel}`}
                       render={<SelectButton size="sm" />}
                       className="w-auto min-w-0"
                       disabled={!captureAvailable}
                     >
                       {soundSelection === "off" ? (
-                        "Off"
+                        t("Off")
                       ) : soundSelection === "soft-pop" ? (
                         <>
-                          Whoosh <span className="text-muted-foreground">(Default)</span>
+                          {t("Whoosh")}{" "}
+                          <span className="text-muted-foreground">{t("(Default)")}</span>
                         </>
                       ) : (
-                        "Click"
+                        t("Click")
                       )}
                     </MenuTrigger>
                     <MenuPopup align="end">
@@ -501,11 +506,12 @@ export function SnapShotSettings() {
                         value={soundSelection}
                       >
                         <MenuRadioItem closeOnClick value="off">
-                          Off
+                          {t("Off")}
                         </MenuRadioItem>
                         <div className={soundOptionRowClassName}>
                           <MenuRadioItem closeOnClick value="soft-pop">
-                            Whoosh <span className="text-muted-foreground">(Default)</span>
+                            {t("Whoosh")}{" "}
+                            <span className="text-muted-foreground">{t("(Default)")}</span>
                           </MenuRadioItem>
                           <MenuItem
                             aria-label={t("Play Whoosh")}
@@ -517,7 +523,7 @@ export function SnapShotSettings() {
                         </div>
                         <div className={soundOptionRowClassName}>
                           <MenuRadioItem closeOnClick value="camera-shutter">
-                            Click
+                            {t("Click")}
                           </MenuRadioItem>
                           <MenuItem
                             aria-label={t("Play Click")}

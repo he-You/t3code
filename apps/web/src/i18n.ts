@@ -2952,6 +2952,17 @@ const chinese: Readonly<Record<string, string>> = {
   "Navigation": "导航",
   "Other": "其他",
   "Preview & diff": "预览与差异",
+  "Whoosh (Default)": "嗖声（默认）",
+  "Whoosh": "嗖声",
+  "Click": "点击",
+  "Could not check this shortcut.": "无法检查此快捷键。",
+  "Change shortcut": "更改快捷键",
+  "Shortcut permissions": "快捷键权限",
+  "Snapshot sound": "快照音效",
+  "Press shortcut…": "按下快捷键…",
+  "Choose shortcut": "选择快捷键",
+  "(Default)": "（默认）",
+  "Could not start shortcut recording.": "无法开始快捷键录制。",
 };
 
 export function translate(language: InterfaceLanguage, text: string): string {
