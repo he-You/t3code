@@ -1,4 +1,5 @@
 import { workspaceAreaProps } from "../lib/workspaceFocus";
+import { useTranslation } from "../i18n";
 import { useAtomMount, useAtomValue } from "@effect/atom-react";
 import {
   isAtomCommandInterrupted,
@@ -405,14 +406,17 @@ export type TerminalContextMenuAction =
   | "select-all"
   | "scroll-to-bottom";
 
-function terminalSelectionMenuItems(options?: {
+function terminalSelectionMenuItems(options: {
   canAddToChat?: boolean;
+  t: (text: string) => string;
 }): ContextMenuItem<"add-to-chat" | "copy">[] {
   return [
     ...(options?.canAddToChat === false
       ? []
-      : ([{ id: "add-to-chat", label: "Add to chat" }] satisfies ContextMenuItem<"add-to-chat">[])),
-    { id: "copy", label: "Copy" },
+      : ([
+          { id: "add-to-chat", label: options.t("Add to chat") },
+        ] satisfies ContextMenuItem<"add-to-chat">[])),
+    { id: "copy", label: options.t("Copy") },
   ];
 }
 
@@ -420,16 +424,17 @@ function terminalContextMenuItems(options: {
   hasSelection: boolean;
   canAddToChat?: boolean;
   readOnly?: boolean;
+  t: (text: string) => string;
 }): ContextMenuItem<TerminalContextMenuAction>[] {
   const { hasSelection, canAddToChat = true } = options;
   return [
-    ...terminalSelectionMenuItems({ canAddToChat }).map((item) => ({
+    ...terminalSelectionMenuItems({ canAddToChat, t: options.t }).map((item) => ({
       ...item,
       disabled: !hasSelection,
     })),
-    { id: "paste", label: "Paste", ...(options.readOnly ? { disabled: true } : {}) },
-    { id: "select-all", label: "Select all" },
-    { id: "scroll-to-bottom", label: "Jump to latest" },
+    { id: "paste", label: options.t("Paste"), ...(options.readOnly ? { disabled: true } : {}) },
+    { id: "select-all", label: options.t("Select all") },
+    { id: "scroll-to-bottom", label: options.t("Jump to latest") },
   ];
 }
 
@@ -494,6 +499,7 @@ interface TerminalLaunchLocation {
 }
 
 export function TerminalViewport(props: TerminalViewportProps) {
+  const t = useTranslation();
   const sessionKey = JSON.stringify([
     props.threadRef.environmentId,
     props.threadId,
@@ -913,11 +919,12 @@ function TerminalSessionViewport({
               hasSelection: selectionAction !== null,
               canAddToChat: canAddSelectionToChat(),
               readOnly: !hasTerminalWriteAccess(),
+              t,
             }),
             { x: event.clientX, y: event.clientY },
           );
         } catch (error) {
-          reportIfCurrent(requestId, error, "Unable to open the terminal context menu");
+          reportIfCurrent(requestId, error, t("Unable to open the terminal context menu"));
           focusIfCurrent(requestId);
           return;
         }
@@ -964,7 +971,7 @@ function TerminalSessionViewport({
         openSelectionMenuRequestIdRef.current = requestId;
         const clicked = await localApi.contextMenu
           .show(
-            terminalSelectionMenuItems({ canAddToChat: canAddSelectionToChat() }),
+            terminalSelectionMenuItems({ canAddToChat: canAddSelectionToChat(), t }),
             nextAction.position,
           )
           .finally(() => {
@@ -1048,14 +1055,14 @@ function TerminalSessionViewport({
         if (!latestTerminal) return;
         if (isTerminalUrl(text)) {
           if (!localApi) {
-            writeSystemMessage(latestTerminal, "Opening links is unavailable in this browser.");
+            writeSystemMessage(latestTerminal, t("Opening links is unavailable in this browser."));
             return;
           }
           const fallbackToBrowser = () => {
             void localApi.shell.openExternal(text).catch((error: unknown) => {
               writeSystemMessage(
                 latestTerminal,
-                error instanceof Error ? error.message : "Unable to open link",
+                error instanceof Error ? error.message : t("Unable to open link"),
               );
             });
           };
@@ -1068,7 +1075,7 @@ function TerminalSessionViewport({
               toastManager.add(
                 stackedThreadToast({
                   type: "error",
-                  title: "Unable to open link",
+                  title: t("Unable to open link"),
                   description: error instanceof Error ? error.message : "An error occurred.",
                 }),
               );
@@ -1085,7 +1092,7 @@ function TerminalSessionViewport({
           const error = squashAtomCommandFailure(result);
           writeSystemMessage(
             latestTerminal,
-            error instanceof Error ? error.message : "Unable to open path",
+            error instanceof Error ? error.message : t("Unable to open path"),
           );
         })();
       }
@@ -1098,7 +1105,7 @@ function TerminalSessionViewport({
           const error = squashAtomCommandFailure(result);
           writeSystemMessage(
             terminal,
-            error instanceof Error ? error.message : "Terminal write failed",
+            error instanceof Error ? error.message : t("Terminal write failed"),
           );
         })();
       }
@@ -1173,7 +1180,7 @@ function TerminalSessionViewport({
         setupTerminal = null;
         if (cancelled) return;
         const message =
-          error instanceof Error ? error.message : "Unable to initialize libghostty-vt";
+          error instanceof Error ? error.message : t("Unable to initialize libghostty-vt");
         mount.textContent = `${message}. Close and reopen the terminal to retry.`;
       });
 
@@ -1508,8 +1515,9 @@ export default function ThreadTerminalDrawer({
   terminalLabelsById,
   terminalLaunchLocationsById,
 }: ThreadTerminalDrawerProps) {
+  const t = useTranslation();
   const canOperateTerminal = useEnvironmentScope(threadRef.environmentId, AuthTerminalOperateScope);
-  const terminalArea = workspaceAreaProps("terminal", 5, "Terminal");
+  const terminalArea = workspaceAreaProps("terminal", 5, t("Terminal"));
   const isPanel = mode === "panel";
   const [advancedTypography] = useLocalStorage(
     TYPOGRAPHY_ADVANCED_STORAGE_KEY,
@@ -1814,7 +1822,7 @@ export default function ThreadTerminalDrawer({
           />
         ) : null}
         <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3 px-4 py-6 text-center text-sm text-muted-foreground">
-          <p>No terminal sessions for this thread yet.</p>
+          <p>{t("No terminal sessions for this thread yet.")}</p>
           <Button
             size="xs"
             variant="outline"
