@@ -3167,6 +3167,22 @@ const chinese: Readonly<Record<string, string>> = {
   "Waiting for approval": "等待批准",
   "Open subagent": "打开子智能体",
   "Open subagent thread": "打开子智能体对话",
+  "Forked from conversation": "从对话分叉",
+  "Conversation fork": "对话分叉",
+  "Open source conversation": "打开源对话",
+  "Open fork": "打开分叉",
+  "Created thread": "已创建对话",
+  "Context handoff": "上下文交接",
+  "Finished": "已完成",
+  "Open {title}": "打开 {title}",
+  "Background setup is still running: {name}. Show setup progress.": "后台设置仍在运行：{name}。显示设置进度。",
+  "File change": "文件更改",
+  "File to read": "要读取的文件",
+  "Permission request": "权限请求",
+  "App access request": "应用访问请求",
+  "Provider process is gone. Interrupt or restart the child thread to respond.":
+    "服务提供商进程已消失。请中断或重启子对话以继续。",
+  "Failed to submit approval decision.": "提交批准决定失败。",
 };
 
 export function translate(language: InterfaceLanguage, text: string): string {

@@ -11,6 +11,7 @@ import { useEnvironmentScope } from "../../state/session";
 import { childThreadApprovalsAtom, threadEnvironment } from "../../state/threads";
 import { useAtomCommand } from "../../state/use-atom-command";
 import { ComposerPendingApprovalActions } from "./ComposerPendingApprovalActions";
+import { useTranslation } from "../../i18n";
 
 function ChildApproval({ entry }: { entry: ChildThreadApproval }) {
   const canRespond = useEnvironmentScope(entry.thread.environmentId, AuthOrchestrationOperateScope);
@@ -30,7 +31,7 @@ function ChildApproval({ entry }: { entry: ChildThreadApproval }) {
       {approval.appName ? <p className="mt-2 text-muted-foreground">{approval.appName}</p> : null}
       {approval.responseCapability !== "live" ? (
         <p className="mt-2 text-warning">
-          Provider process is gone. Interrupt or restart the child thread to respond.
+          {t("Provider process is gone. Interrupt or restart the child thread to respond.")}
         </p>
       ) : null}
       {approval.reason ? <p className="mt-2 text-muted-foreground">{approval.reason}</p> : null}
@@ -58,7 +59,7 @@ function ChildApproval({ entry }: { entry: ChildThreadApproval }) {
             if (result._tag === "Failure" && !isAtomCommandInterrupted(result)) {
               const failure = squashAtomCommandFailure(result);
               setError(
-                failure instanceof Error ? failure.message : "Failed to submit approval decision.",
+                failure instanceof Error ? failure.message : t("Failed to submit approval decision."),
               );
             }
             setResponding(false);
@@ -76,6 +77,7 @@ function ChildApproval({ entry }: { entry: ChildThreadApproval }) {
 }
 
 export function ChildThreadApprovals({ threadRef }: { threadRef: ScopedThreadRef | null }) {
+  const t = useTranslation();
   const approvals = useAtomValue(childThreadApprovalsAtom(threadRef));
   if (approvals.length === 0) return null;
   return (
