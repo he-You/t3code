@@ -56,7 +56,7 @@ import {
   filterKeybindingRows,
   buildKeybindingCommandOptions,
   buildWhenVariableOptions,
-  commandLabel,
+  commandLabel, localizeCommandLabel,
   DEFAULT_WHEN_VARIABLE,
   isKnownWhenVariable,
   keybindingConflictLabels,
@@ -832,7 +832,7 @@ function KeybindingKeyControl({
           ref={pillRef}
           type="button"
           onClick={() => setDraft({ isRecording: true })}
-          aria-label={`Edit shortcut for ${commandLabel(row.command)}: ${formatShortcutLabel(row.binding.shortcut)}`}
+          aria-label={`${t("Edit shortcut for")} ${localizeCommandLabel(commandLabel(row.command), t)}: ${formatShortcutLabel(row.binding.shortcut)}`}
           className={cn(
             "inline-flex h-8 cursor-pointer items-center rounded-md border border-transparent px-1.5 sm:h-7 outline-none transition-colors hover:border-border/70 hover:bg-accent focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring/24",
             pillClassName,
@@ -844,7 +844,7 @@ function KeybindingKeyControl({
         <Input
           data-keybinding-capture=""
           autoFocus={isRecording}
-          aria-label={`Keybinding for ${commandLabel(row.command)}`}
+          aria-label={`${t("Keybinding for")} ${localizeCommandLabel(commandLabel(row.command), t)}`}
           value={isRecording ? "" : keyDraft}
           placeholder={isRecording ? "Press shortcut" : "Unassigned"}
           size="sm"
@@ -932,7 +932,7 @@ function KeybindingRowMenu({
             variant="ghost-muted"
             size="icon-sm"
             disabled={isSaving}
-            aria-label={`Actions for ${commandLabel(row.command)}`}
+            aria-label={`${t("Actions for")} ${localizeCommandLabel(commandLabel(row.command), t)}`}
           />
         }
       >
@@ -965,10 +965,11 @@ function KeybindingSourceBadge({ source }: { source: KeybindingRow["source"] }) 
 }
 
 function KeybindingRowTitle({ row }: { row: KeybindingRow }) {
+  const t = useTranslation();
   return (
     <Tooltip>
       <TooltipTrigger render={<span className="flex items-center gap-2" />}>
-        {commandLabel(row.command)}
+        {localizeCommandLabel(commandLabel(row.command), t)}
         <KeybindingSourceBadge source={row.source} />
       </TooltipTrigger>
       <TooltipPopup side="top">{row.command}</TooltipPopup>
@@ -985,11 +986,12 @@ function KeybindingRowWhen({
   editor: KeybindingRowEditor;
   variables: ReadonlyArray<WhenVariableOption>;
 }) {
+  const t = useTranslation();
   return (
     <span className="flex h-6 items-center gap-1.5">
       <span className="text-xs leading-none text-muted-foreground/70">When</span>
       <WhenClauseControl
-        label={commandLabel(row.command)}
+        label={localizeCommandLabel(commandLabel(row.command), t)}
         expression={editor.whenDraftExpression}
         value={editor.whenDraft}
         variables={variables}
@@ -1014,6 +1016,7 @@ function KeybindingHoverRowMenu(props: {
 }
 
 function KeybindingSettingsRow(props: KeybindingRowProps) {
+  const t = useTranslation();
   const { row, isSaving, anchorId, allRows, variables, onSave, onReset, onRemove } = props;
   const editor = useKeybindingRowEditor({ row, allRows, onSave });
 
@@ -1051,6 +1054,7 @@ function useNewKeybindingDraft({
   allRows: ReadonlyArray<KeybindingRow>;
   onSave: (input: ServerUpsertKeybindingInput) => void;
 }) {
+  const t = useTranslation();
   const [commandDraft, setCommandDraft] = useState<KeybindingCommand | "">("");
   const [draft, setDraft] = useReducer(keybindingRowDraftReducer, {
     keyDraft: "",
@@ -1065,7 +1069,9 @@ function useNewKeybindingDraft({
     key: keyDraft,
     when: whenDraftExpression,
   });
-  const commandLabelText = commandDraft ? commandLabel(commandDraft) : "new keybinding";
+  const commandLabelText = commandDraft
+    ? localizeCommandLabel(commandLabel(commandDraft), t)
+    : t("new keybinding");
   const canSave = Boolean(commandDraft) && keyDraft.trim().length > 0 && isWhenDraftValid;
 
   const save = () => {
@@ -1130,6 +1136,7 @@ function NewKeybindingCommandSelect({
   commandOptions: ReadonlyArray<KeybindingCommandOption>;
   className?: string | undefined;
 }) {
+  const t = useTranslation();
   return (
     <Select
       value={draft.commandDraft}
@@ -1141,7 +1148,9 @@ function NewKeybindingCommandSelect({
       <SelectContent alignItemWithTrigger={false} matchTriggerWidth={false} className="max-h-72">
         {commandOptions.map((command) => (
           <SelectItem key={command} value={command} className="w-full">
-            <span className="truncate">{commandLabel(command)}</span>
+            <span className="truncate">
+              {localizeCommandLabel(commandLabel(command), t)}
+            </span>
           </SelectItem>
         ))}
       </SelectContent>

@@ -390,6 +390,19 @@ export function commandLabel(command: KeybindingCommand): string {
   return raw.split(".").map(titleCaseCommandSegment).join(": ");
 }
 
+export function localizeCommandLabel(label: string, t: (text: string) => string): string {
+  const whole = t(label);
+  if (whole !== label) return whole;
+  return label
+    .split(": ")
+    .map((part) => {
+      const key = `cmd.${part}`;
+      const translated = t(key);
+      return translated === key ? part : translated;
+    })
+    .join("：");
+}
+
 function titleCaseCommandSegment(segment: string): string {
   const words: Array<string> = [];
   for (const part of segment.replace(/([a-z0-9])([A-Z])/g, "$1 $2").split(/[-_\s]+/)) {
