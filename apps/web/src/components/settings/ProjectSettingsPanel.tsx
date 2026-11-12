@@ -101,7 +101,7 @@ function CheckoutGroupingSelect({ member }: { member: SidebarProjectGroupMember 
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Could not save grouping rule",
+              title: t("Could not save grouping rule"),
               description: error instanceof Error ? error.message : "An error occurred.",
             }),
           );

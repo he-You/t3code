@@ -265,7 +265,7 @@ function ThemeImportBody({
         });
       } catch (cause) {
         failures.push(
-          `${file.name}: ${cause instanceof Error ? cause.message : "not a theme file"}`,
+          `${file.name}: ${cause instanceof Error ? cause.message : t("not a theme file")}`,
         );
       }
     }
@@ -281,7 +281,7 @@ function ThemeImportBody({
         installed.push(installCustomTheme(theme));
       } catch (cause) {
         failures.push(
-          `${theme.label}: ${cause instanceof Error ? cause.message : "could not install"}`,
+          `${theme.label}: ${cause instanceof Error ? cause.message : t("could not install")}`,
         );
       }
     }
@@ -415,7 +415,7 @@ function ThemeImportBody({
       }
       onClose();
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "That theme file is invalid.");
+      setError(cause instanceof Error ? cause.message : t("That theme file is invalid."));
     }
   };
 

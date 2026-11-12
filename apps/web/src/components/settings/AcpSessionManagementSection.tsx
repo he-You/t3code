@@ -41,7 +41,10 @@ function reportFailure(title: string, result: AtomCommandResult<unknown, unknown
   toastManager.add({
     type: "error",
     title,
-    description: error instanceof Error ? error.message : "The ACP operation failed.",
+    description:
+      error instanceof Error
+        ? error.message
+        : translate(readInterfaceLanguage(), "The ACP operation failed."),
   });
 }
 
@@ -57,7 +60,10 @@ function parseProviderHeaders(
   } catch (error) {
     return {
       ok: false,
-      error: error instanceof Error ? error.message : "Headers must be valid JSON.",
+      error:
+        error instanceof Error
+          ? error.message
+          : translate(readInterfaceLanguage(), "Headers must be valid JSON."),
     };
   }
   if (

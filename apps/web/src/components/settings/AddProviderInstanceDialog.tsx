@@ -362,7 +362,7 @@ export function AddProviderInstanceDialog({
     }));
     setIdentityByDriver((existing) =>
       updateProviderIdentityDraft(existing, ACP_REGISTRY_DRIVER_KIND, {
-        label: "Local ACP",
+        label: t("Local ACP"),
         instanceIdOverride: null,
       }),
     );
@@ -406,7 +406,7 @@ export function AddProviderInstanceDialog({
       setIsSaving(false);
       toastManager.add({
         type: "error",
-        title: "Could not add provider instance",
+        title: t("Could not add provider instance"),
         description: error instanceof Error ? error.message : "The settings update failed.",
       });
       return;
@@ -420,7 +420,7 @@ export function AddProviderInstanceDialog({
     }
     toastManager.add({
       type: "success",
-      title: "Provider instance added",
+      title: t("Provider instance added"),
       description: `${driverOption.label} instance '${instanceId}' was added.`,
     });
     onOpenChange(false);

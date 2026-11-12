@@ -49,7 +49,7 @@ import {
   type SimlockTokenEntry,
 } from "./simlockDeviceHostsSettings.logic";
 import { useHostConnectionChecks } from "./useHostConnectionChecks";
-import { useTranslation } from "../../i18n";
+import { readInterfaceLanguage, translate, useTranslation } from "../../i18n";
 
 const deviceHostStatesAtom = environmentAtomList("web-device-host-states", (environmentId) =>
   deviceEnvironment.state({ environmentId, input: {} }),
@@ -125,9 +125,17 @@ function hostStatus(
     }
     case "installing":
     case "starting":
-      return { tone: "pending", label: "Starting", detail: status.detail };
+      return {
+        tone: "pending",
+        label: translate(readInterfaceLanguage(), "Starting"),
+        detail: status.detail,
+      };
     case "failed":
-      return { tone: "error", label: "Failed", detail: status.detail };
+      return {
+        tone: "error",
+        label: translate(readInterfaceLanguage(), "Failed"),
+        detail: status.detail,
+      };
     default:
       return undefined;
   }
@@ -240,7 +248,7 @@ export function DeviceSourcesSettings(props: {
     } catch (error) {
       toastManager.add({
         type: "error",
-        title: "Device host not saved",
+        title: t("Device host not saved"),
         description: error instanceof Error ? error.message : String(error),
       });
     }
@@ -339,7 +347,12 @@ export function DeviceSourcesSettings(props: {
       <Menu>
         <MenuTrigger
           render={
-            <Button size="icon-sm" variant="ghost-muted" disabled={disabled} aria-label="More" />
+            <Button
+              size="icon-sm"
+              variant="ghost-muted"
+              disabled={disabled}
+              aria-label={t("More")}
+            />
           }
         >
           <MoreVertical />
@@ -418,7 +431,7 @@ export function DeviceSourcesSettings(props: {
         if (!held)
           return { environmentId: member.environmentId, label: member.label, added: false };
         const status = testing.has(host.id)
-          ? ({ tone: "pending", label: "Testing connection" } as const)
+          ? ({ tone: "pending", label: t("Testing connection") } as const)
           : hostStatus(member.state, held.host.id);
         return {
           environmentId: member.environmentId,
@@ -429,7 +442,7 @@ export function DeviceSourcesSettings(props: {
             status?.tone === "error" && member.state?.supportsHostRetry
               ? {
                   ...status,
-                  label: "Can't connect",
+                  label: t("Can't connect"),
                   action: { label: "Retry", run: () => retry(member.environmentId, held.host.id) },
                 }
               : status,

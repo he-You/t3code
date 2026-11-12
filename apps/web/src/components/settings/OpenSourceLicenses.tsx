@@ -1,4 +1,4 @@
-import { useTranslation } from "../../i18n";
+import { readInterfaceLanguage, translate, useTranslation } from "../../i18n";
 import { ChevronRightIcon, ExternalLinkIcon, SearchIcon } from "lucide-react";
 import { useAtomRefresh, useAtomValue } from "@effect/atom-react";
 import * as Cause from "effect/Cause";
@@ -45,7 +45,10 @@ const licenseManifestAtom = Atom.make(
       try: () => decodeThirdPartyLicenseManifest(body),
       catch: (error) =>
         new LicenseManifestLoadError({
-          message: error instanceof Error ? error.message : "The license manifest could not load.",
+          message:
+            error instanceof Error
+              ? error.message
+              : translate(readInterfaceLanguage(), "The license manifest could not load."),
         }),
     });
   }).pipe(
@@ -57,7 +60,12 @@ const licenseManifestAtom = Atom.make(
       duration: "30 seconds",
       orElse: () =>
         Effect.fail(
-          new LicenseManifestLoadError({ message: "The license manifest took too long to load." }),
+          new LicenseManifestLoadError({
+            message: translate(
+              readInterfaceLanguage(),
+              "The license manifest took too long to load.",
+            ),
+          }),
         ),
     }),
     Effect.provide(FetchHttpClient.layer),
@@ -241,7 +249,7 @@ export function OpenSourceLicensesPanel() {
   const errorMessage =
     result._tag === "Failure" && !result.waiting
       ? Option.match(Cause.findErrorOption(result.cause), {
-          onNone: () => "The license manifest could not load.",
+          onNone: () => t("The license manifest could not load."),
           onSome: (error) => error.message,
         })
       : null;

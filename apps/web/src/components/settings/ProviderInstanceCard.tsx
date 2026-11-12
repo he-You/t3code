@@ -812,7 +812,7 @@ export function ProviderInstanceCard({
       toastManager.add({
         type: "success",
         title: `${providerName} update command copied`,
-        description: "Run it in a terminal when you are ready to update.",
+        description: t("Run it in a terminal when you are ready to update."),
       });
     },
     onError: (error, { providerName }) => {

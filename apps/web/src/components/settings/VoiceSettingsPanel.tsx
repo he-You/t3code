@@ -528,7 +528,7 @@ function CleanupModelRow() {
   const setModel = (next: ReturnType<typeof createModelSelection>) => {
     const reason = modelDisabledReason(next.instanceId, next.model);
     if (reason) {
-      toastManager.add({ type: "error", title: "Cleanup model not saved", description: reason });
+      toastManager.add({ type: "error", title: t("Cleanup model not saved"), description: reason });
       return;
     }
     updateSettings({ speechPostProcessingModelSelection: next });
@@ -539,7 +539,9 @@ function CleanupModelRow() {
       settingKeys={["speechPostProcessingModelSelection"]}
       {...searchableSetting("speech-post-processing-model")}
       title="Cleanup model"
-      description="Model for transcript cleanup, such as a cheaper or faster one. When disabled, use the text generation model configured for this environment."
+      description={t(
+        "Model for transcript cleanup, such as a cheaper or faster one. When disabled, use the text generation model configured for this environment.",
+      )}
       control={
         connectedEnvironments.length === 0 ? (
           <span className="text-sm text-muted-foreground">Connect an environment first.</span>
@@ -1573,7 +1575,7 @@ export function VoiceSettingsPanel() {
         <SettingsRow
           {...searchableSetting("remove-filler-words")}
           title="Remove filler words"
-          description="Remove filler words like “um” and “uh” from transcripts."
+          description={t("Remove filler words like “um” and “uh” from transcripts.")}
           control={
             <Switch
               aria-label={t("Remove filler words")}
@@ -1587,7 +1589,9 @@ export function VoiceSettingsPanel() {
         <SettingsRow
           {...searchableSetting("speech-dictionary")}
           title="Dictionary"
-          description="Names and terms transcription should spell your way, saved on this device. Add an alias when it keeps hearing a term wrong. The name of the project you dictate in is also sent as a hint."
+          description={t(
+            "Names and terms transcription should spell your way, saved on this device. Add an alias when it keeps hearing a term wrong. The name of the project you dictate in is also sent as a hint.",
+          )}
           control={
             <span className="text-xs text-muted-foreground">
               {language === "zh-CN"
@@ -1682,7 +1686,9 @@ export function VoiceSettingsPanel() {
           <SettingsRow
             {...searchableSetting("speech-correction-word")}
             title="Correction cue"
-            description="The word or phrase you say to flag a correction, like “sorry” or “scratch that”. Cleanup applies the correction only where one is meant, and hears the cue as a hint."
+            description={t(
+              "The word or phrase you say to flag a correction, like “sorry” or “scratch that”. Cleanup applies the correction only where one is meant, and hears the cue as a hint.",
+            )}
             control={
               <Input
                 key={settings.speechCorrectionWord}
