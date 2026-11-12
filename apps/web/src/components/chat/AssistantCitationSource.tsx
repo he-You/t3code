@@ -7,7 +7,7 @@ import {
 } from "~/lib/assistantTextSelection";
 import { toastManager } from "../ui/toast";
 import { observeResize } from "~/lib/observeResize";
-import { useTranslation } from "../../i18n";
+import { readInterfaceLanguage, translate, useTranslation } from "../../i18n";
 
 const CITATION_PULSE_DURATION_MS = 650;
 const CITATION_HIGHLIGHT_HOLD_MS = 1575;
@@ -111,6 +111,7 @@ function observeAssistantCitationSource({
   request: AssistantCitationTarget;
   list: LegendListRef;
 }) {
+  const t = (text: string) => translate(readInterfaceLanguage(), text);
   const activation = request.activationRef.current;
   if (activation.dismissed) return;
   const scrollNode = list.getScrollableNode();

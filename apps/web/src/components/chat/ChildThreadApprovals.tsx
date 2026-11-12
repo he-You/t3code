@@ -14,6 +14,7 @@ import { ComposerPendingApprovalActions } from "./ComposerPendingApprovalActions
 import { useTranslation } from "../../i18n";
 
 function ChildApproval({ entry }: { entry: ChildThreadApproval }) {
+  const t = useTranslation();
   const canRespond = useEnvironmentScope(entry.thread.environmentId, AuthOrchestrationOperateScope);
   const respond = useAtomCommand(threadEnvironment.respondToApproval, { reportFailure: false });
   const [responding, setResponding] = useState(false);

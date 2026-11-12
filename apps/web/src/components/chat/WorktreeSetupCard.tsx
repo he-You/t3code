@@ -250,6 +250,7 @@ function OutputTail({ lines, failed }: { lines: ReadonlyArray<string>; failed: b
 }
 
 function SetupDetails({ snapshot }: { snapshot: WorktreeSetupSnapshot }) {
+  const t = useTranslation();
   return (
     <dl className="mt-1 mb-1.5 ml-8 grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
       {snapshot.branch ? (
@@ -322,6 +323,7 @@ export function WorktreeSetupCard({
 }: WorktreeSetupCardProps & {
   embedded?: boolean;
 }) {
+  const t = useTranslation();
   const running = snapshot.phase === "running";
   const [detailsOpen, setDetailsOpen] = useState(false);
   const setupStage = snapshot.stages.find((stage) => stage.id === "setup-script");

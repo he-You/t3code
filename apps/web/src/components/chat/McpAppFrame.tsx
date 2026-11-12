@@ -35,7 +35,7 @@ import { useTurnItemDetail } from "~/state/queries";
 import { mcpAppEnvironment } from "~/state/mcpApps";
 import { useAtomCommand } from "~/state/use-atom-command";
 import { observeResize } from "~/lib/observeResize";
-import { useTranslation } from "../../i18n";
+import { readInterfaceLanguage, translate, useTranslation } from "../../i18n";
 
 const commandFailure = (result: {
   readonly cause: Parameters<typeof squashAtomCommandFailure>[0]["cause"];
@@ -43,7 +43,9 @@ const commandFailure = (result: {
   const error = squashAtomCommandFailure(result);
   return new McpAppHostRefusal({
     message:
-      error instanceof Error && error.message.trim() !== "" ? error.message : t("Request failed."),
+      error instanceof Error && error.message.trim() !== ""
+        ? error.message
+        : translate(readInterfaceLanguage(), "Request failed."),
   });
 };
 

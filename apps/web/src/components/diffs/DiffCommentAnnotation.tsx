@@ -63,6 +63,7 @@ export function DiffCommentAnnotation({
   focusOnMount = true,
   completionScope = null,
 }: DiffCommentAnnotationProps) {
+  const t = useTranslation();
   const [localDraftText, setLocalDraftText] = useState("");
   const displayedText = kind === "draft" && !onTextChange ? localDraftText : text;
   const trimmedText = displayedText.trim();

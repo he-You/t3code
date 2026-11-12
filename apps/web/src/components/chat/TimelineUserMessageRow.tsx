@@ -1089,6 +1089,7 @@ function RevertUserMessageButton({
   turnCount: number;
   messageId: MessageId;
 }) {
+  const t = useTranslation();
   const ctx = use(TimelineRowCtx);
   const activity = use(TimelineRowActivityCtx);
 

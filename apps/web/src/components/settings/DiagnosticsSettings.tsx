@@ -453,6 +453,7 @@ function ResourceHistoryProcessNameCell({
   process: ServerProcessResourceHistorySummary;
   visualDepth: number;
 }) {
+  const t = useTranslation();
   const name = formatShortProcessName(process.command);
 
   return (

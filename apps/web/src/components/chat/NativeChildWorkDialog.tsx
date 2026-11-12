@@ -90,6 +90,7 @@ function NativeChildWorkContent(props: {
 }
 
 function NativeChild(props: { readonly child: OrchestrationV2NativeChildWork }) {
+  const t = useTranslation();
   const { child } = props;
   return (
     <section aria-label={child.role || "Subagent"} className="flex min-w-0 flex-col gap-2">

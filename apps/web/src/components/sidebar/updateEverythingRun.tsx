@@ -1,5 +1,5 @@
 import { useAtomValue } from "@effect/atom-react";
-import { useTranslation } from "../../i18n";
+import { readInterfaceLanguage, translate, useTranslation } from "../../i18n";
 import { serverUpdateStateAtom } from "@t3tools/client-runtime/state/server";
 import { EnvironmentId } from "@t3tools/contracts";
 import * as Option from "effect/Option";
@@ -325,6 +325,7 @@ function followHandedOffServers(servers: ReadonlyArray<HandedOffServer>): void {
 
 /** Reports, once per launch, how the update run that restarted the app ended. */
 export function startDesktopUpdateLaunchNotice(): () => void {
+  const t = (text: string) => translate(readInterfaceLanguage(), text);
   const saved = takeSavedUpdateEverythingResult();
   if (saved) {
     const handedOff = saved.handedOff ?? [];

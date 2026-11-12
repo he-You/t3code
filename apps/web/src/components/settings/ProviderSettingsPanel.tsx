@@ -1278,6 +1278,7 @@ function ProviderInstanceRow({
   readonly favorites: UnifiedSettings["favorites"];
   readonly actions: ProviderInstanceRowActions;
 }) {
+  const t = useTranslation();
   const allProjects = useProjects();
   const secretSources = useSecretSources(environmentId);
   const acpProjects =
