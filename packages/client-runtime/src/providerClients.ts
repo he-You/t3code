@@ -15,6 +15,9 @@ import { kiroClient } from "@t3tools/provider-kiro/client";
 import { museClient } from "@t3tools/provider-muse/client";
 import { openCodeClient } from "@t3tools/provider-opencode/client";
 import { piClient } from "@t3tools/provider-pi/client";
+import { deepseekClient } from "@t3tools/provider-deepseek/client";
+import { qoderClient } from "@t3tools/provider-qoder/client";
+import { zcodeClient } from "@t3tools/provider-zcode/client";
 
 // OpenRouter's Ink and Cloud glyphs from https://openrouter.ai/brand.
 export const openRouterIcon: ProviderIcon = {
@@ -56,6 +59,9 @@ export const providerClients = makeProviderClientRegistry([
   kiroClient,
   museClient,
   piClient,
+  deepseekClient,
+  qoderClient,
+  zcodeClient,
   acpRegistryClient,
 ]);
 

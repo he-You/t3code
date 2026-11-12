@@ -16,6 +16,9 @@ import type {
   ProviderUsageReaderEnv,
 } from "@t3tools/provider-core/server/driver";
 import { KiroDriver, type KiroDriverEnv } from "@t3tools/provider-kiro/server";
+import { DeepseekDriver, type DeepseekDriverEnv } from "@t3tools/provider-deepseek/server";
+import { QoderDriver, type QoderDriverEnv } from "@t3tools/provider-qoder/server";
+import { ZcodeDriver, type ZcodeDriverEnv } from "@t3tools/provider-zcode/server";
 
 export type BuiltInDriversEnv =
   | AcpRegistryDriverEnv
@@ -26,6 +29,9 @@ export type BuiltInDriversEnv =
   | FxDriverEnv
   | GrokDriverEnv
   | KiroDriverEnv
+  | DeepseekDriverEnv
+  | QoderDriverEnv
+  | ZcodeDriverEnv
   | OpenCodeDriverEnv
   | PiDriverEnv
   | MuseDriverEnv;
@@ -39,6 +45,9 @@ export const BUILT_IN_DRIVERS: ReadonlyArray<AnyProviderDriver<BuiltInDriversEnv
   OpenCodeDriver,
   AntigravityDriver,
   KiroDriver,
+  DeepseekDriver,
+  QoderDriver,
+  ZcodeDriver,
   PiDriver,
   MuseDriver,
   AcpRegistryDriver,
@@ -52,7 +61,8 @@ export type BuiltInUsageReadersEnv =
   | ProviderUsageReaderEnv<typeof AntigravityDriver>
   | ProviderUsageReaderEnv<typeof CursorDriver>
   | ProviderUsageReaderEnv<typeof PiDriver>
-  | ProviderUsageReaderEnv<typeof MuseDriver>;
+  | ProviderUsageReaderEnv<typeof MuseDriver>
+  | ProviderUsageReaderEnv<typeof DeepseekDriver>;
 
 /** Order matters: aggregation keeps the first duplicate record. */
 export const BUILT_IN_USAGE_DRIVERS: ReadonlyArray<
@@ -62,6 +72,7 @@ export const BUILT_IN_USAGE_DRIVERS: ReadonlyArray<
   CodexDriver,
   GrokDriver,
   PiDriver,
+  DeepseekDriver,
   OpenCodeDriver,
   MuseDriver,
   AntigravityDriver,

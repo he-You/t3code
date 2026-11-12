@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vite-plus/test";
 
-import { rankProvidersByMetric } from "./usageProviders";
+import { PROVIDER_ORDER, PROVIDER_PRESENTATION, rankProvidersByMetric } from "./usageProviders";
 
 describe("rankProvidersByMetric", () => {
   it("ranks by the selected metric, highest first", () => {
@@ -12,6 +12,14 @@ describe("rankProvidersByMetric", () => {
 
     expect(rankProvidersByMetric(providers, totals, "tokens")).toEqual(["claude", "codex"]);
     expect(rankProvidersByMetric(providers, totals, "cost")).toEqual(["codex", "claude"]);
+  });
+
+  it("lists DeepSeek like any other usage provider", () => {
+    expect(PROVIDER_ORDER).toContain("deepseek");
+    expect(PROVIDER_PRESENTATION.deepseek).toMatchObject({
+      label: "DeepSeek",
+      driverKind: "deepseek",
+    });
   });
 
   it("keeps ties in input order without reordering the shared provider list", () => {

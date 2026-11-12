@@ -2,6 +2,7 @@
 // Cold windows span ~1.4 GB/1,500 files; node:fs buffer streaming is ~10x cheaper than materializing files.
 import * as NodeFSP from "node:fs/promises";
 import * as NodePath from "node:path";
+import * as NodeStream from "node:stream";
 import * as NodeStringDecoder from "node:string_decoder";
 import * as NodeZlib from "node:zlib";
 
@@ -14,6 +15,7 @@ import * as Option from "effect/Option";
 import * as Schema from "effect/Schema";
 
 import { createTranscriptJsonReader } from "../project/AgentSessionJson.ts";
+import { decompressZstdFrames } from "./zstdFrames.ts";
 
 export interface TranscriptFile {
   readonly path: string;
@@ -89,7 +91,9 @@ export async function listTranscriptFiles(
       else if (
         fileName !== undefined
           ? entry.name === fileName
-          : entry.name.endsWith(".jsonl") || entry.name.endsWith(".jsonl.zst")
+          : entry.name.endsWith(".jsonl") ||
+            entry.name.endsWith(".jsonl.zst") ||
+            entry.name.endsWith(".jsonl.zstd")
       ) {
         candidates.push(child);
       }
@@ -167,7 +171,8 @@ export async function readTranscriptRecords<State>(
   options?: { readonly streamingThresholdBytes?: number },
 ): Promise<TranscriptParseResult | null> {
   const streamingThresholdBytes = options?.streamingThresholdBytes ?? STREAMING_THRESHOLD_BYTES;
-  const compressed = filePath.endsWith(".jsonl.zst");
+  const concatenatedFrames = filePath.endsWith(".jsonl.zstd");
+  const compressed = filePath.endsWith(".jsonl.zst") || concatenatedFrames;
   let handle: NodeFSP.FileHandle;
   try {
     handle = await NodeFSP.open(filePath, "r");
@@ -254,14 +259,18 @@ export async function readTranscriptRecords<State>(
       streaming = undefined;
       decoder = undefined;
     };
-    const input = handle.createReadStream({
-      start,
-      autoClose: compressed,
-      highWaterMark: 256 * 1024,
-    });
+    // Multi-frame snapshots cannot be streamed by node:zlib past the first frame.
+    const input = concatenatedFrames
+      ? NodeStream.Readable.from([decompressZstdFrames(await NodeFSP.readFile(filePath))])
+      : handle.createReadStream({
+          start,
+          autoClose: compressed,
+          highWaterMark: 256 * 1024,
+        });
     // Compressed snapshots cache a full parse; decoded byte offsets cannot
     // resume the compressed input.
-    const stream = compressed ? input.compose(NodeZlib.createZstdDecompress()) : input;
+    const stream =
+      compressed && !concatenatedFrames ? input.compose(NodeZlib.createZstdDecompress()) : input;
     for await (const chunk of stream) {
       let lineStart = 0;
       while (lineStart < chunk.length) {

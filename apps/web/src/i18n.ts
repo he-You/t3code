@@ -3737,6 +3737,30 @@ const chinese: Readonly<Record<string, string>> = {
   "T3 Code home": "T3 Code 主页",
   "Add a comment…": "添加评论…",
   "Delete comment": "删除评论",
+  "Path to the Qoder CLI binary.": "Qoder CLI 可执行文件的路径。",
+  "Checking Qoder CLI availability...": "正在检查 Qoder CLI 是否可用…",
+  "Qoder is disabled in T3 Code settings.": "Qoder 已在 T3 Code 设置中禁用。",
+  "Qoder CLI (qoder) was not found on this environment. Set the executable path in provider settings.":
+    "此环境中未找到 Qoder CLI（qoder）。请在服务提供商设置中填写可执行文件路径。",
+  "Qoder CLI did not start an ACP session.": "Qoder CLI 未能启动 ACP 会话。",
+  "Qoder CLI did not start an ACP session in time.": "Qoder CLI 未能及时启动 ACP 会话。",
+  "Qoder does not provide application text generation.": "Qoder 不提供应用内文本生成。",
+  "Qoder default": "Qoder 默认模型",
+  "Bridge path": "桥接程序路径",
+  "Path to the zcode-acp-server bridge that exposes the ZCode app-server over ACP.":
+    "通过 ACP 暴露 ZCode app-server 的 zcode-acp-server 桥接程序路径。",
+  "Checking the ZCode ACP bridge...": "正在检查 ZCode ACP 桥接程序…",
+  "ZCode is disabled in T3 Code settings.": "ZCode 已在 T3 Code 设置中禁用。",
+  "The ZCode ACP bridge (zcode-acp-server) was not found. Install `zcode-acp` or set the bridge path.":
+    "未找到 ZCode ACP 桥接程序（zcode-acp-server）。请安装 `zcode-acp` 或填写桥接程序路径。",
+  "ZCode did not start an ACP session.": "ZCode 未能启动 ACP 会话。",
+  "ZCode did not start an ACP session in time.": "ZCode 未能及时启动 ACP 会话。",
+  "ZCode does not provide application text generation.": "ZCode 不提供应用内文本生成。",
+  "ZCode default": "ZCode 默认模型",
+  "Qoder CLI is not signed in. Run `qoder` in a terminal on this environment, then refresh.":
+    "Qoder CLI 尚未登录。请在此环境的终端运行 `qoder` 登录后刷新。",
+  "ZCode is not signed in. Open the ZCode app on this environment and sign in, then refresh.":
+    "ZCode 尚未登录。请在此环境打开 ZCode 应用登录后刷新。",
 };
 
 export function translate(language: InterfaceLanguage, text: string): string {

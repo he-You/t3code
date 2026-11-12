@@ -193,6 +193,9 @@ computer.
 | Cursor      | Install [Cursor CLI](https://cursor.com/cli), then run `agent login`.                                                                                     |
 | Grok Build  | Install [Grok Build CLI](https://x.ai/cli), then run `grok login`.                                                                                        |
 | Kiro        | Install [Kiro CLI](https://kiro.dev/docs/cli/), then run `kiro-cli login`.                                                                                |
+| DeepSeek    | Install [DeepSeek Harness](./providers-deepseek.md) and sign in, or set a DeepSeek API key on the provider instance.                                      |
+| Qoder       | Install [Qoder CLI](https://docs.qoder.com/cli/overview), then run `qoder` to sign in.                                                                    |
+| ZCode       | Install the [ZCode app](https://zcode.z.ai) and `npm install -g zcode-acp`, then add the provider.                                                        |
 | OpenCode    | Install [OpenCode](https://opencode.ai), then run `opencode auth login`.                                                                                  |
 | Antigravity | Install and sign in with Google from T3 Code's provider settings.                                                                                         |
 | Pi          | Install [Pi](./providers-pi.md#set-up-pi) with Node.js 22.19 or newer, then run `pi` and `/login`.                                                        |
@@ -230,6 +233,8 @@ their original values.
 For provider-specific setup and accounts, see [Codex](./providers-codex.md),
 [Claude](./providers-claude.md), [OpenCode](./providers-opencode.md),
 [Antigravity](./providers-antigravity.md), [Kiro](./providers-kiro.md),
+[DeepSeek](./providers-deepseek.md), [Qoder](./providers-qoder.md),
+[ZCode](./providers-zcode.md),
 [Pi](./providers-pi.md), [Muse Code](./providers-muse.md), and [fx](./providers-fx.md).
 
 ## Next steps

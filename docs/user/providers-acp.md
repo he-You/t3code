@@ -6,7 +6,8 @@ own models, tools, and sign-in, while T3 Code provides projects, threads, checkp
 delegation.
 
 Agents that T3 Code supports as their own providers, such as Codex, Claude, Cursor, Grok, OpenCode,
-Pi, and [Antigravity](./providers-antigravity.md), don't appear in the Registry list. Enable them in
+Pi, [Antigravity](./providers-antigravity.md), [DeepSeek](./providers-deepseek.md),
+[Qoder](./providers-qoder.md), and [ZCode](./providers-zcode.md), don't appear in the Registry list. Enable them in
 **Settings → Providers** instead.
 
 T3 Code prefers the current ACP v2 preview protocol and uses its richer messages, usage, plans,

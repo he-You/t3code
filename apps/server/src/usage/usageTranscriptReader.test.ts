@@ -82,9 +82,11 @@ describe("compressed transcripts", () => {
     await NodeFSP.mkdir(nested);
     const plain = NodePath.join(dir, "active.jsonl");
     const compressed = NodePath.join(nested, "archived.jsonl.zst");
+    const longSuffix = NodePath.join(nested, "deepseek.jsonl.zstd");
     const old = NodePath.join(nested, "old.jsonl.zst");
     await NodeFSP.writeFile(plain, claudeLine(1, 5));
     await NodeFSP.writeFile(compressed, NodeZlib.zstdCompressSync(claudeLine(2, 7)));
+    await NodeFSP.writeFile(longSuffix, NodeZlib.zstdCompressSync(claudeLine(4, 9)));
     await NodeFSP.writeFile(old, NodeZlib.zstdCompressSync(claudeLine(3, 11)));
     await NodeFSP.writeFile(NodePath.join(nested, "unrelated.zst"), "ignored");
     await NodeFSP.writeFile(NodePath.join(nested, "partial.jsonl.zst.tmp"), "ignored");
@@ -93,7 +95,7 @@ describe("compressed transcripts", () => {
     const listed = await listTranscriptFiles(dir, Date.parse("2026-01-01T00:00:00Z"));
     assert.deepStrictEqual(
       listed.files.map((file) => file.path).sort(),
-      [plain, compressed].sort(),
+      [plain, compressed, longSuffix].sort(),
     );
     assert.strictEqual(listed.failedPaths, 0);
     assert.isAbove(listed.files.find((file) => file.path === compressed)?.size ?? 0, 0);

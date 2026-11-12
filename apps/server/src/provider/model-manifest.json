@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-05T22:38:29Z",
+  "updatedAt": "2026-11-12T01:55:00Z",
   "compatibility": [
     {
       "driver": "codex",
@@ -105,6 +105,32 @@
       "ranges": [
         { "range": ">=1.4.2", "status": "supported" },
         { "range": "<1.4.2", "status": "unknown" }
+      ]
+    },
+    {
+      "driver": "deepseek",
+      "t3CodeRange": ">=0.0.46",
+      "recommendedRange": ">=0.2.0",
+      "ranges": [
+        { "range": ">=0.2.0", "status": "supported" },
+        { "range": "<0.2.0", "status": "unsupported" }
+      ]
+    },
+    {
+      "driver": "qoder",
+      "t3CodeRange": ">=0.0.46",
+      "recommendedRange": ">=1.0.0",
+      "ranges": [
+        { "range": ">=1.0.0", "status": "supported" },
+        { "range": "<1.0.0", "status": "unsupported" }
+      ]
+    },
+    {
+      "driver": "zcode",
+      "t3CodeRange": ">=0.0.46",
+      "recommendedRange": ">=0.1.0",
+      "ranges": [
+        { "range": ">=0.1.0", "status": "supported" }
       ]
     },
     {
