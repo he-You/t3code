@@ -78,7 +78,6 @@ import { Atom } from "effect/reactivity";
 import { environmentThreadDetails } from "../../state/threads";
 import { openSideChatTab } from "../../lib/sideChatPane";
 import type { useLocalDispatchState } from "./useLocalDispatchState";
-import { useTranslation } from "../../i18n";
 const RELATED_THREAD_SHELL_WAIT_MS = 1_000;
 const NO_RUN_STOP_ATOM = Atom.make<RunStopPresentation | null>(null).pipe(
   Atom.withLabel("web-thread-run-stop:empty"),
