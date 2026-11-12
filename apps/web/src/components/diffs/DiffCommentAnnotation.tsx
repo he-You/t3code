@@ -15,6 +15,7 @@ import {
 import { textDirection } from "~/textDirection";
 
 import { isCommentSubmitShortcut } from "./commentSubmitShortcut";
+import { useTranslation } from "../../i18n";
 
 interface DiffCommentSecondaryAction {
   readonly label: string;
@@ -55,8 +56,8 @@ export function DiffCommentAnnotation({
   onCancel,
   onComment,
   onDelete,
-  placeholder = "Add a comment…",
-  submitLabel = "Comment",
+  placeholder,
+  submitLabel,
   pending = false,
   secondaryAction,
   focusOnMount = true,
@@ -96,7 +97,7 @@ export function DiffCommentAnnotation({
             <Button
               variant="ghost-muted"
               size="icon-xs"
-              aria-label="Delete comment"
+              aria-label={t("Delete comment")}
               onClick={onDelete}
             >
               <Trash2 className="size-3" />
@@ -135,7 +136,7 @@ export function DiffCommentAnnotation({
         size="sm"
         value={displayedText}
         dir={textDirection(displayedText)}
-        placeholder={placeholder}
+        placeholder={placeholder ?? t("Add a comment…")}
         aria-label={`Comment on lines ${rangeLabel}`}
         onValueChange={onTextChange ?? setLocalDraftText}
         onFocus={(event) => {
@@ -180,7 +181,7 @@ export function DiffCommentAnnotation({
           disabled={speech?.preparing || pending || (!speech?.blocksSubmission && !trimmedText)}
           onClick={() => submit(speech, onComment)}
         >
-          {submitLabel}
+          {submitLabel ?? t("Comment")}
         </Button>
       </div>
     </div>

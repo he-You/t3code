@@ -3733,6 +3733,10 @@ const chinese: Readonly<Record<string, string>> = {
   "The word or phrase you say to flag a correction, like “sorry” or “scratch that”. Cleanup applies the correction only where one is meant, and hears the cue as a hint.":
     "用于标记更正的词或短语，例如“抱歉”或“说错了”。整理只会在确实需要更正的地方应用，并将该提示作为线索。",
   "new worktrees start from remote": "新工作树从远程开始",
+  "Toggle main sidebar": "切换主侧边栏",
+  "T3 Code home": "T3 Code 主页",
+  "Add a comment…": "添加评论…",
+  "Delete comment": "删除评论",
 };
 
 export function translate(language: InterfaceLanguage, text: string): string {
