@@ -48,6 +48,7 @@ import {
   useUpdateEverythingRun,
 } from "./updateEverythingRun";
 import { type ReportLocalUpdateError, useUpdateEverything } from "./useUpdateEverything";
+import { useTranslation } from "../../i18n";
 
 type SidebarUpdatePopoverChangeDetails = Parameters<
   NonNullable<ComponentProps<typeof Popover>["onOpenChange"]>
@@ -129,7 +130,7 @@ function SidebarUpdateArchitectureWarningContent() {
   return (
     <Alert variant="warning">
       <TriangleAlertIcon />
-      <AlertTitle>Intel build on Apple Silicon</AlertTitle>
+      <AlertTitle>{t("Intel build on Apple Silicon")}</AlertTitle>
       <AlertDescription>{description}</AlertDescription>
     </Alert>
   );
@@ -192,6 +193,7 @@ export async function installLocalUpdate(
 }
 
 export function SidebarUpdatePill() {
+  const t = useTranslation();
   return <SidebarUpdateControl />;
 }
 
@@ -374,7 +376,7 @@ function SidebarUpdateControl() {
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Could not update everything",
+          title: t("Could not update everything"),
           description: error instanceof Error ? error.message : "An unexpected error occurred.",
         }),
       );
@@ -551,7 +553,7 @@ function SidebarUpdateControl() {
         {showReleaseNotesPopover && state ? (
           <PopoverPopup
             align="center"
-            aria-label="Update release notes"
+            aria-label={t("Update release notes")}
             initialFocus={false}
             onKeyDownCapture={(event) => {
               if (

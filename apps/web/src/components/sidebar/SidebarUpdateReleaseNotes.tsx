@@ -7,6 +7,7 @@ import {
 } from "../desktopUpdate.logic";
 import { formatRelativeTimeLabel } from "../../timestampFormat";
 import { openDesktopUpdateReleaseNotes } from "../desktopUpdate.toast";
+import { useTranslation } from "../../i18n";
 
 type DesktopUpdateShell = Pick<DesktopBridge, "openExternal">;
 
@@ -64,6 +65,7 @@ export function SidebarUpdateReleaseNotes({
   readonly state: DesktopUpdateState;
   readonly tooltip: string;
 }) {
+  const t = useTranslation();
   if (state.releaseNotes.length === 0) {
     return <>{tooltip}</>;
   }
@@ -77,7 +79,7 @@ export function SidebarUpdateReleaseNotes({
         {state.status === "available" ? (
           <div>
             <div className="whitespace-nowrap text-sm leading-5 font-medium">
-              Update ready to download
+              {t("Update ready to download")}
             </div>
             {state.availableVersion ? (
               <div className="mt-0.5 text-xs leading-4 text-muted-foreground">

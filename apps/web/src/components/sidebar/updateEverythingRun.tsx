@@ -1,4 +1,5 @@
 import { useAtomValue } from "@effect/atom-react";
+import { useTranslation } from "../../i18n";
 import { serverUpdateStateAtom } from "@t3tools/client-runtime/state/server";
 import { EnvironmentId } from "@t3tools/contracts";
 import * as Option from "effect/Option";
@@ -27,6 +28,7 @@ const updateEverythingRunAtom = Atom.make<UpdateEverythingRun | null>(null).pipe
 );
 
 export function useUpdateEverythingRun(): UpdateEverythingRun | null {
+  const t = useTranslation();
   return useAtomValue(updateEverythingRunAtom);
 }
 
@@ -341,8 +343,12 @@ export function startDesktopUpdateLaunchNotice(): () => void {
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Update did not apply",
-          description: `T3 Code is still on ${APP_VERSION}. Install ${notAppliedVersion} again from the update button.`,
+          title: t("Update did not apply"),
+          description: t(
+            "T3 Code is still on {current}. Install {target} again from the update button.",
+          )
+            .replace("{current}", APP_VERSION)
+            .replace("{target}", notAppliedVersion),
         }),
       );
     },

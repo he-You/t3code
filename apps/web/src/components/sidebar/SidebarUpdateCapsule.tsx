@@ -1,4 +1,5 @@
 import { useAtomValue } from "@effect/atom-react";
+import { useTranslation } from "../../i18n";
 import { type ReactNode, useSyncExternalStore } from "react";
 
 import { cn } from "~/lib/utils";
@@ -66,6 +67,7 @@ export function SidebarUpdateCapsule({
   readonly icon: ReactNode;
   readonly onRestart?: () => Promise<void>;
 }) {
+  const t = useTranslation();
   const machines = useUpdateRunMachineViews(run);
   const hasActiveMachine = machines.some(
     ({ status }) => status !== "done" && status !== "failed" && status !== "waiting",
@@ -139,7 +141,7 @@ export function SidebarUpdateCapsule({
             <div className="flex items-center justify-between gap-3">
               <span>This app</span>
               <Button size="xs" variant="outline" onClick={() => void onRestart()}>
-                Restart to update
+                {t("Restart to update")}
               </Button>
             </div>
           ) : null}

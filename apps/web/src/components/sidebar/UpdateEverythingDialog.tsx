@@ -19,6 +19,7 @@ import { Collapsible, CollapsiblePanel, CollapsibleTrigger } from "../ui/collaps
 import { MiddleTruncate } from "../ui/middle-truncate";
 import { ScrollArea } from "../ui/scroll-area";
 import type { RestartingMachine, UpdateEverythingRow } from "./updateEverything.logic";
+import { useTranslation } from "../../i18n";
 
 const isRunning = (status: string) =>
   status === "preparing" || status === "starting" || status === "running";
@@ -103,6 +104,7 @@ function UpdateEverythingDialogContent({
   disabledReason = null,
   busy = false,
 }: UpdateEverythingDialogContentProps) {
+  const t = useTranslation();
   const stopped = useAtomValue(
     runningThreadCountAtom(
       restarts
@@ -172,7 +174,7 @@ function UpdateEverythingDialogContent({
                     <span className="text-muted-foreground">Skipped</span>
                   ) : null}
                   {row.app === "this-app" ? (
-                    <span className="block text-muted-foreground text-xs">restarts last</span>
+                    <span className="block text-muted-foreground text-xs">{t("restarts last")}</span>
                   ) : null}
                 </span>
                 <span>

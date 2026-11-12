@@ -3635,6 +3635,17 @@ const chinese: Readonly<Record<string, string>> = {
   "Could not open the provider link.": "无法打开服务提供商链接。",
   "Could not load the sign-in terminal. Cancel and retry sign-in.": "无法加载登录终端。请取消并重试登录。",
   "pull request routing": "拉取请求路由",
+  "Dismiss provider update notice": "关闭服务提供商更新提示",
+  "Dismiss until provider status changes": "在服务提供商状态变化前不再提示",
+  "Update ready to download": "更新已可下载",
+  "Could not update everything": "无法全部更新",
+  "Intel build on Apple Silicon": "Apple Silicon 上的 Intel 版本",
+  "Update release notes": "更新发行说明",
+  "restarts last": "最后重启",
+  "Restart to update": "重启以更新",
+  "Update did not apply": "更新未生效",
+  "T3 Code is still on {current}. Install {target} again from the update button.":
+    "T3 Code 仍为 {current}。请从更新按钮重新安装 {target}。",
 };
 
 export function translate(language: InterfaceLanguage, text: string): string {
