@@ -9,6 +9,7 @@ import {
 } from "../../themePalette";
 import { stackedThreadToast, toastManager } from "../ui/toast";
 import { useThemeEditorStore } from "./themeEditorStore";
+import { useTranslation } from "../../i18n";
 
 const ThemeEditorPanel = lazy(() =>
   import("./ThemeEditorPanel").then((module) => ({ default: module.ThemeEditorPanel })),
@@ -23,6 +24,7 @@ function useThemeDefinition(id: string | null | undefined) {
 }
 
 export function ThemeEditorHost() {
+  const t = useTranslation();
   const session = useThemeEditorStore((store) => store.session);
   const closeThemeEditor = useThemeEditorStore((store) => store.closeThemeEditor);
   const { theme, setTheme, themeHalves, refreshTheme } = useTheme();
@@ -38,8 +40,8 @@ export function ThemeEditorHost() {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Could not save your theme",
-            description: "Browser storage is unavailable, so the change was not kept.",
+            title: t("Could not save your theme"),
+            description: t("Browser storage is unavailable, so the change was not kept."),
           }),
         );
         return false;
@@ -74,8 +76,8 @@ export function ThemeEditorHost() {
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Could not save your theme",
-          description: "Browser storage is unavailable, so the change was not kept.",
+          title: t("Could not save your theme"),
+          description: t("Browser storage is unavailable, so the change was not kept."),
         }),
       );
       return false;
@@ -84,7 +86,7 @@ export function ThemeEditorHost() {
       stackedThreadToast({
         type: "success",
         title: `${savedTheme.label} created`,
-        description: "It’s now active.",
+        description: t("It’s now active."),
       }),
     );
     return true;

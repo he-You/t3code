@@ -10,6 +10,7 @@ import { Button } from "../ui/button";
 import { stackedThreadToast, toastManager } from "../ui/toast";
 import { SettingsRow } from "./settingsLayout";
 import { searchableSetting } from "./settingsSearch";
+import { useTranslation } from "../../i18n";
 
 const FAILURE_TITLES = {
   install: "Could not install t3",
@@ -19,6 +20,7 @@ const FAILURE_TITLES = {
 
 /** The desktop `t3` command's state, and its actions with a toast on failure. */
 export function useDesktopCliCommand() {
+  const t = useTranslation();
   const bridge = getDesktopCliCommandBridge();
   const query = useEnvironmentQuery(bridge ? desktopCliCommandStateAtom : null);
   const [pending, setPending] = useState(false);
@@ -33,7 +35,7 @@ export function useDesktopCliCommand() {
           stackedThreadToast({
             type: "error",
             title: FAILURE_TITLES[action],
-            description: error instanceof Error ? error.message : "Something went wrong.",
+            description: error instanceof Error ? error.message : t("Something went wrong."),
           }),
         );
       })
@@ -48,6 +50,7 @@ export function useDesktopCliCommand() {
 }
 
 export function CliCommandSettingsRow() {
+  const t = useTranslation();
   const { state, busy, run } = useDesktopCliCommand();
 
   if (!state?.supported) return null;
